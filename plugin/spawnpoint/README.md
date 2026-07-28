@@ -10,6 +10,12 @@ spawnpoint. It's **two skills** that drive the whole flow:
 ## Install
 
 ```bash
+curl -fsSL https://spawnpoint.lol/install | bash
+```
+
+Or by hand:
+
+```bash
 claude plugin marketplace add spawnpoint-inc/spawnpoint-plugin
 claude plugin install spawnpoint@spawnpoint
 ```
