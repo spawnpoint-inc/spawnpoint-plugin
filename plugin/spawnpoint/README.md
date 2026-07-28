@@ -10,7 +10,7 @@ spawnpoint. It's **two skills** that drive the whole flow:
 ## Install
 
 ```bash
-claude plugin marketplace add spawnpoint-inc/spawnpoint
+claude plugin marketplace add spawnpoint-inc/spawnpoint-plugin
 claude plugin install spawnpoint@spawnpoint
 ```
 

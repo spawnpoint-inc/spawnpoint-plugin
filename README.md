@@ -7,7 +7,7 @@ online, and you get a link to share.
 ## Install
 
 ```sh
-claude plugin marketplace add spawnpoint-inc/spawnpoint
+claude plugin marketplace add spawnpoint-inc/spawnpoint-plugin
 claude plugin install spawnpoint@spawnpoint
 ```
 

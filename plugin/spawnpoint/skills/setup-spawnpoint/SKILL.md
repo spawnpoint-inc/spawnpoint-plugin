@@ -14,12 +14,12 @@ happens in the browser via OAuth, and Claude Code stores the credentials itself.
 > first. They give you these skills plus the MCP wiring:
 >
 > ```bash
-> claude plugin marketplace add spawnpoint-inc/spawnpoint
+> claude plugin marketplace add spawnpoint-inc/spawnpoint-plugin
 > claude plugin install spawnpoint@spawnpoint
 > ```
 >
 > (From a local clone, use the repo root as the marketplace source instead of
-> `spawnpoint-inc/spawnpoint`.) Then restart Claude Code and continue below.
+> `spawnpoint-inc/spawnpoint-plugin`.) Then restart Claude Code and continue below.
 
 ## 1. Get the server URL
 
