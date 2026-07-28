@@ -1,5 +1,6 @@
 {
   "name": "spawnpoint",
+  "description": "Deploy the small apps your agent builds and get a shareable link. The easiest way to bring your software online.",
   "owner": {
     "name": "spawnpoint",
     "url": "https://spawnpoint.lol"
@@ -10,7 +11,9 @@
       "source": "./plugin/spawnpoint",
       "description": "Deploy small apps to spawnpoint from your agent: it builds, spawnpoint puts it online, you get a link.",
       "version": "0.1.0",
-      "author": { "name": "spawnpoint" }
+      "author": {
+        "name": "spawnpoint"
+      }
     }
   ]
 }
