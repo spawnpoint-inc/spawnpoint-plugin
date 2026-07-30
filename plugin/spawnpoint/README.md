@@ -41,12 +41,26 @@ Just talk to the agent:
 2. **"deploy this to spawnpoint"** (or "build me a small X and deploy it")
    It ships the app and gives you a public link.
 
-Manage or terminate projects at `http://localhost:8080/console`.
+Manage or terminate projects in your spawnpoint console: `<your spawnpoint origin>/console`,
+which is `http://localhost:8080/console` for a local setup.
 
 ## Requirements
 
 - The spawnpoint backend running and reachable (default `http://localhost:8080`). Same
   machine as the agent for a local setup; a hosted origin otherwise.
 
-> Points at a **local** spawnpoint by default. For a hosted spawnpoint, give the setup skill
-> your hosted origin (e.g. `https://spawnpoint.lol`) instead of `http://localhost:8080`.
+> Points at a **local** spawnpoint by default: spawnpoint runs on your own machine today.
+> For a hosted spawnpoint, give the setup skill that origin instead.
+
+## Docs
+
+Full documentation lives at [spawnpoint.lol](https://spawnpoint.lol):
+
+- [Getting started](https://spawnpoint.lol/getting-started.html): install, sign in, deploy.
+- [MCP server](https://spawnpoint.lol/mcp.html): the endpoint and its three tools.
+- [API tokens](https://spawnpoint.lol/api-tokens.html): `spk_live_` credentials for clients
+  that cannot do OAuth.
+- [Security](https://spawnpoint.lol/security.html) and
+  [Terms](https://spawnpoint.lol/terms.html).
+
+Questions: [founders@spawnpoint.lol](mailto:founders@spawnpoint.lol).

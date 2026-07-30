@@ -25,8 +25,9 @@ happens in the browser via OAuth, and Claude Code stores the credentials itself.
 
 ## 1. Get the server URL
 
-Default `http://localhost:8080` (a locally running spawnpoint). If the user has a hosted
-spawnpoint, use that origin instead.
+Default `http://localhost:8080` (a locally running spawnpoint, which is how spawnpoint runs
+today). If the user has a hosted spawnpoint, use that origin instead. `spawnpoint.lol` is the
+site and the installer, not an MCP endpoint: do not register it as the server URL.
 
 ## 2. Check the server is reachable
 

@@ -31,7 +31,8 @@ Call `deploy_project` with:
 - **Node/Python must listen on port 8080** (the machine exposes `:8080`). Static sites are
   served automatically.
 - After a successful call, give the user the returned **`url`**, and mention they can view
-  or terminate the project at <http://localhost:8080/console>.
+  or terminate the project in their console: `<spawnpoint origin>/console`, which is
+  <http://localhost:8080/console> for a local setup.
 - If the call returns an auth error, tell the user to run `/mcp`, select **spawnpoint**,
   and choose **Authenticate** (re-runs the browser OAuth flow). If the spawnpoint server
   isn't registered at all, run `/spawnpoint:setup-spawnpoint` first.
@@ -53,3 +54,5 @@ deploy_project({
 
 - `list_projects`: show the user's projects and URLs.
 - `terminate_project({ project_id })`: take a project down.
+
+Docs: <https://spawnpoint.lol/mcp.html> covers all three tools and their arguments.
