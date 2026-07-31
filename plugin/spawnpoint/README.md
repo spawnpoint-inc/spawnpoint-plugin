@@ -46,11 +46,12 @@ which is `http://localhost:8080/console` for a local setup.
 
 ## Requirements
 
-- The spawnpoint backend running and reachable (default `http://localhost:8080`). Same
-  machine as the agent for a local setup; a hosted origin otherwise.
+- A reachable spawnpoint origin. spawnpoint is a hosted service; use its origin when you
+  have one. For development, a locally running spawnpoint works the same way (default
+  `http://localhost:8080`).
 
-> Points at a **local** spawnpoint by default: spawnpoint runs on your own machine today.
-> For a hosted spawnpoint, give the setup skill that origin instead.
+> The setup skill asks for the origin, so hosted and local setups differ only in the URL
+> you give it.
 
 ## Docs
 
