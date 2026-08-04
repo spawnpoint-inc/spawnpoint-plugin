@@ -37,6 +37,21 @@ Call `deploy_project` with:
   and choose **Authenticate** (re-runs the browser OAuth flow). If the spawnpoint server
   isn't registered at all, run `/spawnpoint:setup-spawnpoint` first.
 
+### Social preview
+
+A spawnpoint link gets pasted into chats and feeds, so it should unfurl into a card,
+not a bare URL. Before deploying an app that serves HTML, check its main page for
+Open Graph tags; if it has none, add them to `<head>`:
+
+- `og:title` (the app's name), `og:description` (one plain sentence on what it does),
+  and `<meta name="twitter:card" content="summary">`.
+- `og:image` and `og:url` need absolute URLs, which exist only after the first deploy.
+  If the app has a raster image that fits a preview card (png/jpg, ideally near
+  1200x630), deploy, take the returned `url`, fill both tags in, and deploy again
+  under the same name: a redeploy updates the project in place and the link does not
+  change. No suitable image, no `og:image`: title and description alone still unfurl.
+- Never replace tags the app already has: existing tags mean someone chose them.
+
 ### Example
 
 ```
