@@ -61,7 +61,7 @@ Tell the user to **restart Claude Code** (or reconnect), then:
 
 1. Run `/mcp`, select **spawnpoint**, and choose **Authenticate**.
 2. A browser opens the spawnpoint consent page. If they're signed out, they sign in first
-   (email → magic link, and in local dev the link is shown right on the page).
+   (enter an email, then click the magic link spawnpoint emails them).
 3. Click **Approve**. Claude Code receives the tokens and stores them securely itself
    (macOS Keychain); they refresh automatically, so this is a one-time step.
 
