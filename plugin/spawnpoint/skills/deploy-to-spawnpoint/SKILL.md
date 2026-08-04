@@ -58,21 +58,19 @@ through:
   legitimately take up to about 12 on a slow machine allocation, so do not give up
   early; if it runs long, tell the user it is still provisioning and carry on.
 
-### Social preview
+### Social preview (optional)
 
-A spawnpoint link gets pasted into chats and feeds, so it should unfurl into a card,
-not a bare URL. Before deploying an app that serves HTML, check its main page for
-Open Graph tags; if it has none, add them to `<head>`:
+A spawnpoint link pasted into a chat unfurls nicer with Open Graph tags, and the
+console generates its own live thumbnail either way, so none of this is required.
+When the app serves HTML and has no tags, adding `og:title` (the app's name),
+`og:description` (one plain sentence), and `<meta name="twitter:card" content="summary">`
+to `<head>` is cheap polish: do it in the first deploy, no follow-up needed.
 
-- `og:title` (the app's name), `og:description` (one plain sentence on what it does),
-  and `<meta name="twitter:card" content="summary">`.
-- `og:image` and `og:url` need absolute URLs, which exist only after the first deploy.
-  If the app has a raster image that fits a preview card (jpg, ideally near 1200x630
-  and **under 200 KB**: compress it down if it isn't), deploy, take the returned `url`,
-  fill both tags in, and deploy again under the same name: a redeploy updates the
-  project in place and the link does not change. Close the loop on the second deploy
-  with `get_project` too. No suitable image, no `og:image`: title and description
-  alone still unfurl.
+- `og:image` is extra credit, not a requirement: only add it when the user cares about
+  a picture in link unfurls AND the app has a suitable raster image (jpg, near
+  1200x630, **under 200 KB**). It needs an absolute URL, which exists only after the
+  first deploy: deploy, fill it in, redeploy under the same name. Do not do this
+  dance by default.
 - Never replace tags the app already has: existing tags mean someone chose them.
 
 ### Example
