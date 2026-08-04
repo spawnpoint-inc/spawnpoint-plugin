@@ -5,8 +5,8 @@ description: Connect this workspace to spawnpoint so deploys work. Use when the 
 
 # Connect to spawnpoint
 
-Wire this workspace to spawnpoint so the `deploy_project` / `list_projects` /
-`terminate_project` tools become available. Do this once. Drive it for the user: run the
+Wire this workspace to spawnpoint so the `deploy_project` / `get_project` /
+`list_projects` / `terminate_project` tools become available. Do this once. Drive it for the user: run the
 commands yourself; don't just describe them. There are **no tokens to copy**: sign-in
 happens in the browser via OAuth, and Claude Code stores the credentials itself.
 

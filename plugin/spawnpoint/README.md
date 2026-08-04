@@ -58,7 +58,7 @@ which is `http://localhost:8080/console` for a local setup.
 Full documentation lives at [spawnpoint.lol](https://spawnpoint.lol):
 
 - [Getting started](https://spawnpoint.lol/getting-started.html): install, sign in, deploy.
-- [MCP server](https://spawnpoint.lol/mcp.html): the endpoint and its three tools.
+- [MCP server](https://spawnpoint.lol/mcp.html): the endpoint and its four tools.
 - [API tokens](https://spawnpoint.lol/api-tokens.html): `spk_live_` credentials for clients
   that cannot do OAuth.
 - [Security](https://spawnpoint.lol/security.html) and

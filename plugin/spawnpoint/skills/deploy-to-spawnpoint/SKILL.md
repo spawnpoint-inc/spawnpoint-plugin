@@ -35,12 +35,28 @@ Call `deploy_project` with:
   will be shown, not larger.
 - **Node/Python must listen on port 8080** (the machine exposes `:8080`). Static sites are
   served automatically.
-- After a successful call, give the user the returned **`url`**, and mention they can view
-  or terminate the project in their console: `<spawnpoint origin>/console`, which is
+- After a successful call, close the loop (next section) until the project is `running`,
+  then give the user the **`url`**, and mention they can view or terminate the project in
+  their console: `<spawnpoint origin>/console`, which is
   <http://localhost:8080/console> for a local setup.
 - If the call returns an auth error, tell the user to run `/mcp`, select **spawnpoint**,
   and choose **Authenticate** (re-runs the browser OAuth flow). If the spawnpoint server
   isn't registered at all, run `/spawnpoint:setup-spawnpoint` first.
+
+### Close the loop
+
+`deploy_project` returns before the app is live: the status starts as `spawning` and
+provisioning finishes in the background. Do not stop at the tool call; see the deploy
+through:
+
+- Poll `get_project({ project_id })` with the returned id, roughly every 15 seconds.
+- `running`: done. Hand the user the URL.
+- `error`: read the `error` field, explain the failure to the user in plain words, fix
+  what is fixable in the bundle, and redeploy under the same name (a redeploy updates
+  in place and keeps the URL).
+- Still `spawning`: keep polling. Provisioning normally takes 1 to 3 minutes but can
+  legitimately take up to about 12 on a slow machine allocation, so do not give up
+  early; if it runs long, tell the user it is still provisioning and carry on.
 
 ### Social preview
 
@@ -54,8 +70,9 @@ Open Graph tags; if it has none, add them to `<head>`:
   If the app has a raster image that fits a preview card (jpg, ideally near 1200x630
   and **under 200 KB**: compress it down if it isn't), deploy, take the returned `url`,
   fill both tags in, and deploy again under the same name: a redeploy updates the
-  project in place and the link does not change. No suitable image, no `og:image`:
-  title and description alone still unfurl.
+  project in place and the link does not change. Close the loop on the second deploy
+  with `get_project` too. No suitable image, no `og:image`: title and description
+  alone still unfurl.
 - Never replace tags the app already has: existing tags mean someone chose them.
 
 ### Example
@@ -68,12 +85,16 @@ deploy_project({
     { "path": "index.html", "content": "<!doctype html><h1>hello from spawnpoint</h1>" }
   ]
 })
-→ { "project_id": "proj_…", "url": "https://…", "status": "running" }
+→ { "project_id": "proj_…", "url": "https://…", "status": "spawning" }
 ```
+
+Then poll `get_project({ "project_id": "proj_…" })` until the status is `running`.
 
 ## Related tools
 
+- `get_project({ project_id })`: one project's status, URL, health, and error reason.
+  The poll target after a deploy.
 - `list_projects`: show the user's projects and URLs.
 - `terminate_project({ project_id })`: take a project down.
 
-Docs: <https://spawnpoint.lol/mcp.html> covers all three tools and their arguments.
+Docs: <https://spawnpoint.lol/mcp.html> covers all four tools and their arguments.
