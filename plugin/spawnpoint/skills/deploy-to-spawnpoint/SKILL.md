@@ -28,6 +28,11 @@ Call `deploy_project` with:
 
 - **Keep it small**: files are injected into the machine (a few files / a few MB total).
   Inline assets where reasonable; don't include `node_modules` or build output.
+- **Keep images small**: every file travels inline over the deploy transport, and large
+  images are the thing that breaks it. Resize and compress any image before bundling
+  (jpg or webp, not png, for anything photographic): aim for **under 200 KB per image**,
+  and never ship one over 500 KB. Generating an image yourself? Render it at the size it
+  will be shown, not larger.
 - **Node/Python must listen on port 8080** (the machine exposes `:8080`). Static sites are
   served automatically.
 - After a successful call, give the user the returned **`url`**, and mention they can view
@@ -46,10 +51,11 @@ Open Graph tags; if it has none, add them to `<head>`:
 - `og:title` (the app's name), `og:description` (one plain sentence on what it does),
   and `<meta name="twitter:card" content="summary">`.
 - `og:image` and `og:url` need absolute URLs, which exist only after the first deploy.
-  If the app has a raster image that fits a preview card (png/jpg, ideally near
-  1200x630), deploy, take the returned `url`, fill both tags in, and deploy again
-  under the same name: a redeploy updates the project in place and the link does not
-  change. No suitable image, no `og:image`: title and description alone still unfurl.
+  If the app has a raster image that fits a preview card (jpg, ideally near 1200x630
+  and **under 200 KB**: compress it down if it isn't), deploy, take the returned `url`,
+  fill both tags in, and deploy again under the same name: a redeploy updates the
+  project in place and the link does not change. No suitable image, no `og:image`:
+  title and description alone still unfurl.
 - Never replace tags the app already has: existing tags mean someone chose them.
 
 ### Example
