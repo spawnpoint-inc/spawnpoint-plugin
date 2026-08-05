@@ -25,10 +25,10 @@ happens in the browser via OAuth, and Claude Code stores the credentials itself.
 
 ## 1. Get the server URL
 
-spawnpoint is a hosted service: if the user has its origin (for example
-`https://app.spawnpoint.lol`), use that. For development against a locally running
-spawnpoint, use `http://localhost:8080`. `spawnpoint.lol` itself is the site and the
-installer, not an MCP endpoint: do not register it as the server URL.
+spawnpoint is a hosted service and its origin is `https://app.spawnpoint.lol`:
+use that unless the user says otherwise. Developing against a locally running
+spawnpoint is the exception, at `http://localhost:8080`. `spawnpoint.lol` itself is
+the site and the installer, not an MCP endpoint: do not register it as the server URL.
 
 ## 2. Check the server is reachable
 

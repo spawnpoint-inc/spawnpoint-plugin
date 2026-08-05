@@ -42,13 +42,13 @@ Just talk to the agent:
    It ships the app and gives you a public link.
 
 Manage or terminate projects in your spawnpoint console: `<your spawnpoint origin>/console`,
-which is `http://localhost:8080/console` for a local setup.
+which is <https://app.spawnpoint.lol/console> for the hosted service.
 
 ## Requirements
 
 - A reachable spawnpoint origin. spawnpoint is a hosted service; use its origin when you
   have one. For development, a locally running spawnpoint works the same way (default
-  `http://localhost:8080`).
+  `https://app.spawnpoint.lol`; a dev instance runs at `http://localhost:8080`).
 
 > The setup skill asks for the origin, so hosted and local setups differ only in the URL
 > you give it.
