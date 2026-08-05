@@ -28,6 +28,11 @@ Call `deploy_project` with:
 
 - **Keep it small**: files are injected into the machine (a few files / a few MB total).
   Inline assets where reasonable; don't include `node_modules` or build output.
+- **Dependencies install automatically.** Ship `requirements.txt` (python) or
+  `package.json` (node) at the bundle root and spawnpoint installs them on the machine
+  before starting the app, so Flask, Express, and friends just work. Include
+  `package-lock.json` when you have one (it gets the faster, reproducible `npm ci`).
+  Don't vendor libraries into the bundle to avoid dependencies; declare them instead.
 - **Keep images small**: every file travels inline over the deploy transport, and large
   images are the thing that breaks it. Resize and compress any image before bundling
   (jpg or webp, not png, for anything photographic): aim for **under 200 KB per image**,
