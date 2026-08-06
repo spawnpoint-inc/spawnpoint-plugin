@@ -58,7 +58,7 @@ which is <https://app.spawnpoint.lol/console> for the hosted service.
 Full documentation lives at [spawnpoint.lol](https://spawnpoint.lol):
 
 - [Getting started](https://spawnpoint.lol/getting-started.html): install, sign in, deploy.
-- [MCP server](https://spawnpoint.lol/mcp.html): the endpoint and its four tools.
+- [MCP server](https://spawnpoint.lol/mcp.html): the endpoint and its five tools.
 - [API tokens](https://spawnpoint.lol/api-tokens.html): `spk_live_` credentials for clients
   that cannot do OAuth.
 - [Security](https://spawnpoint.lol/security.html) and

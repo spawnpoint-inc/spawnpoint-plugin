@@ -56,12 +56,17 @@ through:
 
 - Poll `get_project({ project_id })` with the returned id, roughly every 15 seconds.
 - `running`: done. Hand the user the URL.
-- `error`: read the `error` field, explain the failure to the user in plain words, fix
-  what is fixable in the bundle, and redeploy under the same name (a redeploy updates
-  in place and keeps the URL).
+- `error`: the `error` field is the one-line reason; the actual cause is usually in the
+  logs. Call `get_project_logs({ project_id })` and read the push log (upload, dependency
+  install, and start output: a pip or npm failure prints its real error there). Fix what
+  it shows and redeploy under the same name (a redeploy updates in place and keeps the
+  URL). Explain to the user what happened in plain words.
 - Still `spawning`: keep polling. Provisioning normally takes 1 to 3 minutes but can
   legitimately take up to about 12 on a slow machine allocation, so do not give up
   early; if it runs long, tell the user it is still provisioning and carry on.
+- Running but misbehaving (blank page, 500s)? `get_project_logs({ project_id,
+  kind: "runtime" })` fetches the app's live journal tail from the machine: read it,
+  fix, redeploy.
 
 ### Social preview (optional)
 
@@ -97,7 +102,9 @@ Then poll `get_project({ "project_id": "proj_…" })` until the status is `runni
 
 - `get_project({ project_id })`: one project's status, URL, health, and error reason.
   The poll target after a deploy.
+- `get_project_logs({ project_id, kind? })`: the project's logs. `push` (default) is the
+  last deploy's output; `runtime` is the app's live journal tail. The diagnosis tool.
 - `list_projects`: show the user's projects and URLs.
 - `terminate_project({ project_id })`: take a project down.
 
-Docs: <https://spawnpoint.lol/mcp.html> covers all four tools and their arguments.
+Docs: <https://spawnpoint.lol/mcp.html> covers all five tools and their arguments.
