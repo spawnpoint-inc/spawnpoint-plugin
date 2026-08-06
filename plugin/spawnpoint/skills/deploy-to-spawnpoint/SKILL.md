@@ -64,9 +64,12 @@ re-upload. The 20 MiB bundle limit applies on both paths.
 - **Node/Python must listen on port 8080** (the machine exposes `:8080`). Static sites are
   served automatically.
 - After a successful call, close the loop (next section) until the project is `running`,
-  then give the user the **`url`**, and mention they can view or terminate the project in
-  their console: <https://app.spawnpoint.lol/console> (or `<origin>/console`
-  for a dev setup).
+  then give the user the **`url`**: it is the project's permanent share link, it survives
+  redeploys and machine replacement, and deep links (paths, query strings) work on it.
+  Do not surface `machine_url` (the raw machine endpoint underneath): it is plumbing, it
+  changes if the machine is replaced, and for restricted projects it refuses traffic.
+  Mention they can view or terminate the project in their console:
+  <https://app.spawnpoint.lol/console> (or `<origin>/console` for a dev setup).
 - If the call returns an auth error, tell the user to run `/mcp`, select **spawnpoint**,
   and choose **Authenticate** (re-runs the browser OAuth flow). If the spawnpoint server
   isn't registered at all, run `/spawnpoint:setup-spawnpoint` first.
