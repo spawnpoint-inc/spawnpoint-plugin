@@ -65,7 +65,15 @@ Tell the user to **restart Claude Code** (or reconnect), then:
 3. Click **Approve**. Claude Code receives the tokens and stores them securely itself
    (macOS Keychain); they refresh automatically, so this is a one-time step.
 
-## 5. Verify
+## 5. Turn on auto-update (one toggle, then never again)
+
+Third-party plugin marketplaces do not auto-update by default, so a one-time toggle is
+what keeps this plugin current from here on. Tell the user to run `/plugin`, open
+**Marketplaces**, select **spawnpoint**, and enable **auto-update**. This is a UI
+setting you cannot flip for them, so say it explicitly and say why: skills improve
+often, and without the toggle they silently stay on today's version.
+
+## 6. Verify
 
 Confirm by asking to **list their spawnpoint projects**: if `list_projects` returns
 without an auth error, they're connected and can deploy with the `deploy-to-spawnpoint`
