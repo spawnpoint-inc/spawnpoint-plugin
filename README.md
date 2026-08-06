@@ -19,14 +19,19 @@ Restart Claude Code so the skills load, then just talk to your agent:
 
 ## Update
 
+**Do this once and never think about updates again:** run `/plugin`, open
+**Marketplaces**, select **spawnpoint**, and enable **auto-update**. Third-party
+marketplaces have it off by default, which is why it takes the one toggle; after that
+Claude Code picks up new versions on its own.
+
+Prefer manual? Two commands, then restart Claude Code:
+
 ```sh
 claude plugin marketplace update spawnpoint
 claude plugin update spawnpoint@spawnpoint
 ```
 
-Restart Claude Code to apply. Or enable auto-update once: run `/plugin`, open
-**Marketplaces**, select **spawnpoint**, and turn on auto-update. New MCP tools need no
-plugin update at all: agents discover them from the server.
+New MCP tools need no plugin update at all: agents discover them from the server.
 
 ## What's in it
 
