@@ -28,7 +28,9 @@ Call `deploy_project` with:
 - `visibility`: **new projects are `restricted` by default**: only the owner and emails
   they share with (verified by a one-time code) can open the link. Pass
   `visibility: "public"` when the user asks for a link anyone can open, or flip it later
-  with `set_visibility`. Tell the user which they got.
+  with `set_visibility`. Tell the user which they got. To let specific people into a
+  restricted project, call `share_project` with each email: they get an invite email
+  with the link, no account needed.
 
 ### Files on disk? Upload, don't inline
 
@@ -137,8 +139,12 @@ Then poll `get_project({ "project_id": "proj_…" })` until the status is `runni
 - `set_visibility({ project_id, visibility })`: flip between `restricted` (owner +
   shared emails only; the default for new projects) and `public` (anyone with the
   link). Instant at the share URL; the machine reconfigures itself in seconds.
+- `share_project({ project_id, email })`: let one person into a restricted project.
+  They get an invite email with the link and verify with a one-time code sent to that
+  address, no account needed. Call once per person; re-adding is harmless.
+- `unshare_project({ project_id, email })`: revoke one viewer. Instant.
 - `create_upload`: mint the single-use upload URL for the upload path above.
-- `list_projects`: show the user's projects and URLs.
+- `list_projects`: show the user's projects, URLs, and who each is shared with.
 - `terminate_project({ project_id })`: take a project down.
 
-Docs: <https://spawnpoint.lol/mcp.html> covers all six tools and their arguments.
+Docs: <https://spawnpoint.lol/mcp.html> covers all nine tools and their arguments.
