@@ -25,6 +25,10 @@ Call `deploy_project` with:
   are for apps you just wrote; for files already on disk, use the upload path below
   and pass `upload_id` instead.
 - `env`: optional environment variables.
+- `visibility`: **new projects are `restricted` by default**: only the owner and emails
+  they share with (verified by a one-time code) can open the link. Pass
+  `visibility: "public"` when the user asks for a link anyone can open, or flip it later
+  with `set_visibility`. Tell the user which they got.
 
 ### Files on disk? Upload, don't inline
 
@@ -130,6 +134,9 @@ Then poll `get_project({ "project_id": "proj_…" })` until the status is `runni
   The poll target after a deploy.
 - `get_project_logs({ project_id, kind? })`: the project's logs. `push` (default) is the
   last deploy's output; `runtime` is the app's live journal tail. The diagnosis tool.
+- `set_visibility({ project_id, visibility })`: flip between `restricted` (owner +
+  shared emails only; the default for new projects) and `public` (anyone with the
+  link). Instant at the share URL; the machine reconfigures itself in seconds.
 - `create_upload`: mint the single-use upload URL for the upload path above.
 - `list_projects`: show the user's projects and URLs.
 - `terminate_project({ project_id })`: take a project down.
