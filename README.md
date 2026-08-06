@@ -17,6 +17,17 @@ Restart Claude Code so the skills load, then just talk to your agent:
   one-time browser sign-in. No keys to copy.
 - **"deploy this to spawnpoint"**: builds, ships, and hands you the link.
 
+## Update
+
+```sh
+claude plugin marketplace update spawnpoint
+claude plugin update spawnpoint@spawnpoint
+```
+
+Restart Claude Code to apply. Or enable auto-update once: run `/plugin`, open
+**Marketplaces**, select **spawnpoint**, and turn on auto-update. New MCP tools need no
+plugin update at all: agents discover them from the server.
+
 ## What's in it
 
 Two skills and the MCP wiring, in [`plugin/spawnpoint/`](plugin/spawnpoint/):
