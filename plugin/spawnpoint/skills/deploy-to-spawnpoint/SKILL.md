@@ -21,8 +21,31 @@ Call `deploy_project` with:
 - `runtime`: `static` (HTML/CSS/JS), `node`, or `python`. Default `static`.
 - `entrypoint`: for `node`/`python`, the file to run (default `index.js` / `main.py`).
   Omit for `static`.
-- `files`: an array of `{ path, content }` for **every** file in the app.
+- `files`: an array of `{ path, content }` for **every** file in the app. Inline files
+  are for apps you just wrote; for files already on disk, use the upload path below
+  and pass `upload_id` instead.
 - `env`: optional environment variables.
+
+### Files on disk? Upload, don't inline
+
+Regenerating existing files as inline `content` is slow and expensive: an 80 KB site
+is minutes of token generation, on every redeploy. When the app's files already exist
+on disk (or the bundle is more than a few small text files, or contains any binary
+asset like an image), use the upload transport instead:
+
+1. Call `create_upload` (no arguments). It returns `upload_id`, `upload_url`, and
+   `command`: the exact one-liner to run.
+2. Run the command from the app's directory. It tars the directory and uploads it in
+   seconds: `tar czf - --exclude .git --exclude node_modules . | curl -fsS -T - "<upload_url>"`.
+   Add more `--exclude` flags for anything else that should not deploy (build caches,
+   `.env` files with secrets you don't want on the machine).
+3. Call `deploy_project` with `upload_id` instead of `files`. Everything else (name,
+   runtime, entrypoint, polling) works exactly the same.
+
+The URL is single-use and expires in 30 minutes; a rejected archive (bad tar, `.git`
+or `node_modules` inside) does not burn it, so fix the tar and re-run the command. If
+`deploy_project` says the upload is unknown or expired, call `create_upload` again and
+re-upload. The 20 MiB bundle limit applies on both paths.
 
 ### Rules
 
@@ -33,11 +56,11 @@ Call `deploy_project` with:
   before starting the app, so Flask, Express, and friends just work. Include
   `package-lock.json` when you have one (it gets the faster, reproducible `npm ci`).
   Don't vendor libraries into the bundle to avoid dependencies; declare them instead.
-- **Keep images small**: every file travels inline over the deploy transport, and large
-  images are the thing that breaks it. Resize and compress any image before bundling
-  (jpg or webp, not png, for anything photographic): aim for **under 200 KB per image**,
-  and never ship one over 500 KB. Generating an image yourself? Render it at the size it
-  will be shown, not larger.
+- **Images ride the upload path**: any image in the bundle means use `create_upload`
+  (inline JSON is text, and large inline files are slow to generate). Still keep them
+  web-sized for the page's sake: jpg or webp, not png, for anything photographic, and
+  aim for **under 200 KB per image**. Generating an image yourself? Render it at the
+  size it will be shown, not larger.
 - **Node/Python must listen on port 8080** (the machine exposes `:8080`). Static sites are
   served automatically.
 - After a successful call, close the loop (next section) until the project is `running`,
@@ -104,7 +127,8 @@ Then poll `get_project({ "project_id": "proj_…" })` until the status is `runni
   The poll target after a deploy.
 - `get_project_logs({ project_id, kind? })`: the project's logs. `push` (default) is the
   last deploy's output; `runtime` is the app's live journal tail. The diagnosis tool.
+- `create_upload`: mint the single-use upload URL for the upload path above.
 - `list_projects`: show the user's projects and URLs.
 - `terminate_project({ project_id })`: take a project down.
 
-Docs: <https://spawnpoint.lol/mcp.html> covers all five tools and their arguments.
+Docs: <https://spawnpoint.lol/mcp.html> covers all six tools and their arguments.

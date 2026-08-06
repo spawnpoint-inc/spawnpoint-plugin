@@ -1,7 +1,7 @@
 {
   "name": "spawnpoint",
   "description": "Deploy small apps to spawnpoint: your agent builds it, spawnpoint puts it online, you get a shareable link.",
-  "version": "0.3.5",
+  "version": "0.4.0",
   "author": { "name": "spawnpoint" },
   "homepage": "https://spawnpoint.lol",
   "license": "MIT"
