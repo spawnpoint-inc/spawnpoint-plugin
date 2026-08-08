@@ -146,5 +146,9 @@ Then poll `get_project({ "project_id": "proj_…" })` until the status is `runni
 - `create_upload`: mint the single-use upload URL for the upload path above.
 - `list_projects`: show the user's projects, URLs, and who each is shared with.
 - `terminate_project({ project_id })`: take a project down.
+- `schedule_teardown({ project_id, in? })`: schedule automatic termination (`in` like
+  `45m`, `2h`, `1d`; omit `in` to cancel). `deploy_project` also accepts `teardown_in`
+  directly. If the user calls the deploy temporary, a demo, or asks for it to go away
+  later, set a teardown instead of relying on anyone remembering.
 
 Docs: <https://spawnpoint.lol/mcp.html> covers all nine tools and their arguments.
