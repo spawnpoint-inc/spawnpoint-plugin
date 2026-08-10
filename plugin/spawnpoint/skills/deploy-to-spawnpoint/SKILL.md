@@ -86,16 +86,25 @@ re-upload. The 20 MiB bundle limit applies on both paths.
 provisioning finishes in the background. Do not stop at the tool call; see the deploy
 through:
 
-- Poll `get_project({ project_id })` with the returned id, roughly every 15 seconds.
+- **Call `watch_deploy({ project_id })`.** It follows the deploy and returns when it
+  settles, streaming each step (machine booting, SSH ready, pushing files, app live) as
+  it happens. Relay those steps to the user as they arrive, so a two minute deploy does
+  not look like a hang. This is the right tool here: polling in a loop is noisier and
+  tells the user nothing while it waits.
+- It returns as soon as the deploy ends, or after `wait_seconds` (default 180) if the
+  deploy is still going. Still going? Call it again, and say so to the user.
+- Only fall back to polling `get_project({ project_id })` every 15 seconds if
+  `watch_deploy` is unavailable.
 - `running`: done. Hand the user the URL.
 - `error`: the `error` field is the one-line reason; the actual cause is usually in the
   logs. Call `get_project_logs({ project_id })` and read the push log (upload, dependency
   install, and start output: a pip or npm failure prints its real error there). Fix what
   it shows and redeploy under the same name (a redeploy updates in place and keeps the
   URL). Explain to the user what happened in plain words.
-- Still `spawning`: keep polling. Provisioning normally takes 1 to 3 minutes but can
-  legitimately take up to about 12 on a slow machine allocation, so do not give up
-  early; if it runs long, tell the user it is still provisioning and carry on.
+- Still `spawning` after a `watch_deploy` call returns: call it again. Provisioning
+  normally takes 1 to 3 minutes but can legitimately take up to about 12 on a slow
+  machine allocation, so do not give up early; tell the user it is still provisioning
+  and carry on.
 - Running but misbehaving (blank page, 500s)? `get_project_logs({ project_id,
   kind: "runtime" })` fetches the app's live journal tail from the machine: read it,
   fix, redeploy.
@@ -128,12 +137,16 @@ deploy_project({
 → { "project_id": "proj_…", "url": "https://…", "status": "spawning" }
 ```
 
-Then poll `get_project({ "project_id": "proj_…" })` until the status is `running`.
+Then call `watch_deploy({ "project_id": "proj_…" })`, relay its steps to the user, and
+hand over the URL when it reports `running`.
 
 ## Related tools
 
-- `get_project({ project_id })`: one project's status, URL, health, and error reason.
-  The poll target after a deploy.
+- `watch_deploy({ project_id, wait_seconds? })`: follow a deploy and return when it
+  settles, streaming each step. What to call after `deploy_project`.
+- `get_project({ project_id })`: one project's status, URL, health, error reason, and the
+  machine it runs on (node and python versions, vCPUs, memory). A single check rather
+  than a wait.
 - `get_project_logs({ project_id, kind? })`: the project's logs. `push` (default) is the
   last deploy's output; `runtime` is the app's live journal tail. The diagnosis tool.
 - `set_visibility({ project_id, visibility })`: flip between `restricted` (owner +
