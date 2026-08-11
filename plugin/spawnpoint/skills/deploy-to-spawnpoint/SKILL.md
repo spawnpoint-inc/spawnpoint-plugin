@@ -20,7 +20,9 @@ Call `deploy_project` with:
 - `name`: a short slug for the project (e.g. `standup-board`).
 - `runtime`: `static` (HTML/CSS/JS), `node`, or `python`. Default `static`.
 - `entrypoint`: for `node`/`python`, the file to run (default `index.js` / `main.py`).
-  Omit for `static`.
+  Omit for `static`, and **omit it for a `node` project that has a `start` script**: the
+  deploy runs `npm start` and a `build` script, so Next.js, Remix, Astro, Nuxt,
+  SvelteKit, and Express deploy as themselves. Set it only to override a wrong script.
 - `files`: an array of `{ path, content }` for **every** file in the app. Inline files
   are for apps you just wrote; for files already on disk, use the upload path below
   and pass `upload_id` instead.
