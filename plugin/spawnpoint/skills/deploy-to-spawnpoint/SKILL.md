@@ -18,7 +18,11 @@ prototype, and wants a shareable link.
 Call `deploy_project` with:
 
 - `name`: a short slug for the project (e.g. `standup-board`).
-- `runtime`: `static` (HTML/CSS/JS), `node`, or `python`. Default `static`.
+- `runtime`: `static` (HTML/CSS/JS), `node`, `python`, or `docker`. Default `static`.
+  For `docker`, the bundle must include a `Dockerfile` at its root; the machine builds
+  and runs it, and the container must listen on port 8080 (`PORT=8080` is set). Reach
+  for it when the app is a compiled language or needs system packages; prefer the other
+  runtimes when one fits, since they skip the build and start faster.
 - `entrypoint`: for `node`/`python`, the file to run (default `index.js` / `main.py`).
   Omit for `static`, and **omit it for a `node` project that has a `start` script**: the
   deploy runs `npm start` and a `build` script, so Next.js, Remix, Astro, Nuxt,
