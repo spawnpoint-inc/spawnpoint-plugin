@@ -98,6 +98,10 @@ through:
 - Only fall back to polling `get_project({ project_id })` every 15 seconds if
   `watch_deploy` is unavailable.
 - `running`: done. Hand the user the URL.
+- `sleeping` (seen on later checks, not during a deploy): the app was idle, so its
+  machine is stopped and billing frozen. It is not broken. Visiting the share URL wakes
+  it in about half a minute, and deploying to the same name wakes it too. Tell the user
+  it is asleep, not down.
 - `error`: the `error` field is the one-line reason; the actual cause is usually in the
   logs. Call `get_project_logs({ project_id })` and read the push log (upload, dependency
   install, and start output: a pip or npm failure prints its real error there). Fix what
