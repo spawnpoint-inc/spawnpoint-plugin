@@ -102,6 +102,10 @@ through:
 - Only fall back to polling `get_project({ project_id })` every 15 seconds if
   `watch_deploy` is unavailable.
 - `running`: done. Hand the user the URL.
+- Refused with a plan-limit error: the account is on the Free plan, which allows one live
+  project at a time. Tell the user to terminate an existing project (`terminate_project`)
+  or upgrade to Pro for unlimited deploys in the console. This is not a failure of the
+  deploy; it is a limit, and the error names the way out.
 - `sleeping` (seen on later checks, not during a deploy): the app was idle, so its
   machine is stopped and billing frozen. It is not broken. Visiting the share URL wakes
   it in about half a minute, and deploying to the same name wakes it too. Tell the user
