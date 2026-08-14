@@ -163,6 +163,9 @@ hand over the URL when it reports `running`.
   than a wait.
 - `get_project_logs({ project_id, kind? })`: the project's logs. `push` (default) is the
   last deploy's output; `runtime` is the app's live journal tail. The diagnosis tool.
+- `set_env({ project_id, set?, unset? })`: add, update, or remove env vars on a live
+  project without a redeploy: `set` upserts, `unset` removes, and the app restarts
+  with the new environment right away. Values are write-only and never shown back.
 - `set_visibility({ project_id, visibility })`: flip between `restricted` (owner +
   shared emails only; the default for new projects) and `public` (anyone with the
   link). Instant at the share URL; the machine reconfigures itself in seconds.
@@ -178,4 +181,4 @@ hand over the URL when it reports `running`.
   directly. If the user calls the deploy temporary, a demo, or asks for it to go away
   later, set a teardown instead of relying on anyone remembering.
 
-Docs: <https://getspawnpoint.com/mcp.html> covers all nine tools and their arguments.
+Docs: <https://getspawnpoint.com/mcp.html> covers every tool and its arguments.
