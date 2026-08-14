@@ -1,7 +1,7 @@
 # spawnpoint plugin
 
 The official [Claude Code](https://claude.com/claude-code) plugin for
-[spawnpoint](https://spawnpoint.lol): your agent builds a small app, spawnpoint puts it
+[spawnpoint](https://getspawnpoint.com): your agent builds a small app, spawnpoint puts it
 online, and you get a link to share.
 
 ## Install
@@ -41,4 +41,4 @@ Two skills and the MCP wiring, in [`plugin/spawnpoint/`](plugin/spawnpoint/):
 - `deploy-to-spawnpoint`: packages the app and calls the `deploy_project` tool.
 
 Details in the [plugin README](plugin/spawnpoint/README.md). This repo is the published
-plugin only; docs live at [spawnpoint.lol](https://spawnpoint.lol).
+plugin only; docs live at [getspawnpoint.com](https://getspawnpoint.com).
