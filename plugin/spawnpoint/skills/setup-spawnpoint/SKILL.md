@@ -14,7 +14,7 @@ happens in the browser via OAuth, and Claude Code stores the credentials itself.
 > first. They give you these skills plus the MCP wiring:
 >
 > ```bash
-> curl -fsSL https://spawnpoint.lol/install | bash
+> curl -fsSL https://getspawnpoint.com/install | bash
 > ```
 >
 > (Or by hand: `claude plugin marketplace add spawnpoint-inc/spawnpoint-plugin`, then
@@ -25,9 +25,9 @@ happens in the browser via OAuth, and Claude Code stores the credentials itself.
 
 ## 1. Get the server URL
 
-spawnpoint is a hosted service and its origin is `https://app.spawnpoint.lol`:
+spawnpoint is a hosted service and its origin is `https://app.getspawnpoint.com`:
 use that unless the user says otherwise. Developing against a locally running
-spawnpoint is the exception, at `http://localhost:8080`. `spawnpoint.lol` itself is
+spawnpoint is the exception, at `http://localhost:8080`. `getspawnpoint.com` itself is
 the site and the installer, not an MCP endpoint: do not register it as the server URL.
 
 ## 2. Check the server is reachable

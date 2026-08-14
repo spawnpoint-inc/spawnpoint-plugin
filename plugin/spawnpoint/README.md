@@ -10,7 +10,7 @@ spawnpoint. It's **two skills** that drive the whole flow:
 ## Install
 
 ```bash
-curl -fsSL https://spawnpoint.lol/install | bash
+curl -fsSL https://getspawnpoint.com/install | bash
 ```
 
 Or by hand:
@@ -42,26 +42,26 @@ Just talk to the agent:
    It ships the app and gives you a public link.
 
 Manage or terminate projects in your spawnpoint console: `<your spawnpoint origin>/console`,
-which is <https://app.spawnpoint.lol/console> for the hosted service.
+which is <https://app.getspawnpoint.com/console> for the hosted service.
 
 ## Requirements
 
 - A reachable spawnpoint origin. spawnpoint is a hosted service; use its origin when you
   have one. For development, a locally running spawnpoint works the same way (default
-  `https://app.spawnpoint.lol`; a dev instance runs at `http://localhost:8080`).
+  `https://app.getspawnpoint.com`; a dev instance runs at `http://localhost:8080`).
 
 > The setup skill asks for the origin, so hosted and local setups differ only in the URL
 > you give it.
 
 ## Docs
 
-Full documentation lives at [spawnpoint.lol](https://spawnpoint.lol):
+Full documentation lives at [getspawnpoint.com](https://getspawnpoint.com):
 
-- [Getting started](https://spawnpoint.lol/getting-started.html): install, sign in, deploy.
-- [MCP server](https://spawnpoint.lol/mcp.html): the endpoint and its five tools.
-- [API tokens](https://spawnpoint.lol/api-tokens.html): `spk_live_` credentials for clients
+- [Getting started](https://getspawnpoint.com/getting-started.html): install, sign in, deploy.
+- [MCP server](https://getspawnpoint.com/mcp.html): the endpoint and its five tools.
+- [API tokens](https://getspawnpoint.com/api-tokens.html): `spk_live_` credentials for clients
   that cannot do OAuth.
-- [Security](https://spawnpoint.lol/security.html) and
-  [Terms](https://spawnpoint.lol/terms.html).
+- [Security](https://getspawnpoint.com/security.html) and
+  [Terms](https://getspawnpoint.com/terms.html).
 
-Questions: [founders@spawnpoint.lol](mailto:founders@spawnpoint.lol).
+Questions: [founders@getspawnpoint.com](mailto:founders@getspawnpoint.com).

@@ -81,7 +81,7 @@ re-upload. The 20 MiB bundle limit applies on both paths.
   Do not surface `machine_url` (the raw machine endpoint underneath): it is plumbing, it
   changes if the machine is replaced, and for restricted projects it refuses traffic.
   Mention they can view or terminate the project in their console:
-  <https://app.spawnpoint.lol/console> (or `<origin>/console` for a dev setup).
+  <https://app.getspawnpoint.com/console> (or `<origin>/console` for a dev setup).
 - If the call returns an auth error, tell the user to run `/mcp`, select **spawnpoint**,
   and choose **Authenticate** (re-runs the browser OAuth flow). If the spawnpoint server
   isn't registered at all, run `/spawnpoint:setup-spawnpoint` first.
@@ -178,4 +178,4 @@ hand over the URL when it reports `running`.
   directly. If the user calls the deploy temporary, a demo, or asks for it to go away
   later, set a teardown instead of relying on anyone remembering.
 
-Docs: <https://spawnpoint.lol/mcp.html> covers all nine tools and their arguments.
+Docs: <https://getspawnpoint.com/mcp.html> covers all nine tools and their arguments.

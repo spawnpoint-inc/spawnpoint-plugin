@@ -3,7 +3,7 @@
   "description": "Deploy the small apps your agent builds and get a shareable link. The easiest way to bring your software online.",
   "owner": {
     "name": "spawnpoint",
-    "url": "https://spawnpoint.lol"
+    "url": "https://getspawnpoint.com"
   },
   "plugins": [
     {
