@@ -173,6 +173,9 @@ hand over the URL when it reports `running`.
   They get an invite email with the link and verify with a one-time code sent to that
   address, no account needed. Call once per person; re-adding is harmless.
 - `unshare_project({ project_id, email })`: revoke one viewer. Instant.
+- `get_project_visits({ project_id })`: who has opened the project, per invited
+  email: invited-only vs first opened, last visited, and a visit count. The answer
+  when the user asks whether someone has looked at what they shared.
 - `create_upload`: mint the single-use upload URL for the upload path above.
 - `list_projects`: show the user's projects, URLs, and who each is shared with.
 - `terminate_project({ project_id })`: take a project down.
