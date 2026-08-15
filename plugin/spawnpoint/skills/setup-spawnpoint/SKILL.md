@@ -22,6 +22,12 @@ happens in the browser via OAuth, and Claude Code stores the credentials itself.
 >
 > (From a local clone, use the repo root as the marketplace source instead of
 > `spawnpoint-inc/spawnpoint-plugin`.) Then restart Claude Code and continue below.
+>
+> **Desktop app, no terminal habit?** You are Claude Code running inside the app, so you
+> can run the installer yourself: run the `curl … | install` line above in a shell and
+> the app's runtime picks up the new server on its next reload. The one step that stays
+> the user's is the browser **Authenticate** click in section 4 — that approval is a
+> deliberate human-in-the-loop and cannot be automated.
 
 ## 1. Get the server URL
 
