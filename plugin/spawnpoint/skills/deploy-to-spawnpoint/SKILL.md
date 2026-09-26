@@ -178,7 +178,11 @@ hand over the URL when it reports `running`.
   when the user asks whether someone has looked at what they shared.
 - `create_upload`: mint the single-use upload URL for the upload path above.
 - `list_projects`: show the user's projects, URLs, and who each is shared with.
-- `terminate_project({ project_id })`: take a project down.
+- `terminate_project({ project_id, confirm: true })`: take a project down for good. It is
+  final: the machine is destroyed with anything the app kept on it (files, a SQLite
+  database, uploads), and the URL stops working. Ask the user first, in those words,
+  and pass `confirm: true` only after they agree; without it the call refuses. When
+  the user wants it gone later rather than now, `schedule_teardown` is the tool.
 - `schedule_teardown({ project_id, in? })`: schedule automatic termination (`in` like
   `45m`, `2h`, `1d`; omit `in` to cancel). `deploy_project` also accepts `teardown_in`
   directly. If the user calls the deploy temporary, a demo, or asks for it to go away
