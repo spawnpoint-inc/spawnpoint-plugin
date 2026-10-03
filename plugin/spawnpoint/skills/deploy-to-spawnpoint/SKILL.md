@@ -57,7 +57,9 @@ asset like an image), use the upload transport instead:
 The URL is single-use and expires in 30 minutes; a rejected archive (bad tar, `.git`
 or `node_modules` inside) does not burn it, so fix the tar and re-run the command. If
 `deploy_project` says the upload is unknown or expired, call `create_upload` again and
-re-upload. The 20 MiB bundle limit applies on both paths.
+re-upload. Uploads take bundles up to 20 MiB. Inline `files` ride inside one MCP
+request, which is capped at 4 MiB in total, so anything near that size goes through
+`create_upload`; an oversized inline call fails with HTTP 413 before it reaches the tool.
 
 ### Rules
 
