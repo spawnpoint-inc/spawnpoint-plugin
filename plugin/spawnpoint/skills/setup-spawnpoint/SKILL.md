@@ -26,8 +26,20 @@ happens in the browser via OAuth, and Claude Code stores the credentials itself.
 > **Desktop app, no terminal habit?** You are Claude Code running inside the app, so you
 > can run the installer yourself: run the `curl … | install` line above in a shell and
 > the app's runtime picks up the new server on its next reload. The one step that stays
-> the user's is the browser **Authenticate** click in section 4 — that approval is a
+> the user's is the browser **Authenticate** click in section 4: that approval is a
 > deliberate human-in-the-loop and cannot be automated.
+
+## 0. Already registered? Check before anything else
+
+If spawnpoint tools are already available in this session (`whoami`, `list_projects`,
+`deploy_project`), the server is registered: call `whoami` and skip the rest of this
+list except as follows.
+
+- **It answers:** the workspace is connected. Say so, then do step 5.
+- **401 / unauthorized:** the server is registered but not signed in. Go straight to
+  step 4, then step 5. Do not re-register it.
+
+Only when no spawnpoint tools exist at all, start at step 1.
 
 ## 1. Get the server URL
 
@@ -44,7 +56,9 @@ curl -fsS <URL>/healthz
 
 If this fails, spawnpoint isn't running. For a local setup, tell the user to start it
 (`./scripts/dev.sh` in the spawnpoint repo, in a separate terminal). For a hosted one,
-double-check the URL.
+double-check the URL. If the check cannot run at all (a sandbox, proxy, or firewall
+blocks the request), say so and carry on with step 3: registering does not depend on
+it, and `/mcp` shows whether the server answers.
 
 ## 3. Register the MCP server (the actual wiring)
 
@@ -62,6 +76,9 @@ it to this one.
 > console.)
 
 ## 4. Authenticate in the browser
+
+Steps 4 and 5 are the user's to do, so put both in the same reply, as numbered
+instructions, even when an earlier step failed.
 
 Tell the user to **restart Claude Code** (or reconnect), then:
 

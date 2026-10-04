@@ -1,11 +1,14 @@
 # spawnpoint plugin (Claude Code)
 
 Install this in any Claude Code workspace and your agent can deploy small apps to
-spawnpoint. It's **two skills** that drive the whole flow:
+spawnpoint. It's **three skills** that drive the whole flow:
 
 - **`setup-spawnpoint`**: connects the workspace (wires the MCP server; you sign in once
   in the browser via OAuth, no tokens to copy).
 - **`deploy-to-spawnpoint`**: builds + deploys an app and hands you the link.
+- **`security-audit`**: checks an app before it ships (secrets, files that should not
+  upload, the port and bind address spawnpoint needs, debug mode, open admin or upload
+  routes), fixes what is safe to fix, and stops the deploy on what is not.
 
 ## Install
 
