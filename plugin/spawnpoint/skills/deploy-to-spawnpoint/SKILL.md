@@ -61,22 +61,32 @@ with the link, no account needed); `unshare_project` revokes.
 Pass secrets in `env` or `set_env`, never in a file. `set_env({ project_id, set?,
 unset? })` changes a live project's environment and restarts the app, no redeploy.
 
-## Where the app's data lives
+## Storage: where the app keeps its data
 
-spawnpoint has no managed database or file storage yet. Everything the app writes
-stays on its one machine:
+The app's own directory is replaced on every deploy, so never keep state there. Pick
+by what the app stores:
 
-- Never keep state inside the app's own directory: every redeploy replaces it. Write
-  it outside, for example under `~/data` (`/home/ubuntu/data`), with the path read
-  from an env var and a local fallback so the app also runs on a laptop.
-- A `docker` app's files reset whenever the container restarts: keep it stateless.
-- The machine, and everything on it, is gone when the project is terminated or its
-  machine has to be replaced. Say so before the user relies on it. For data that must
-  outlive the machine, the answer today is a database the user already has, its URL
-  passed in `env`.
+| The app stores | Use | Call |
+|---|---|---|
+| A SQLite file, a JSON store, a small cache | the data directory, `SPAWNPOINT_DATA_DIR` (fallback `./data` locally) | none |
+| Relational data, or the user asks for Postgres | managed Postgres, `DATABASE_URL` | `add_database({ project_id })` |
+
+- The data directory survives redeploys and sleep (`/home/ubuntu/data`, or `/data`
+  inside a docker container; `get_project` reports it as `data_dir`). It lives on one
+  machine and dies with the project.
+- Call `add_database` after the first deploy: the app restarts with `DATABASE_URL`
+  set, connects with any Postgres client, and creates its own tables. Idempotent; the
+  database dies with the project. For a small app, SQLite in the data directory is
+  the simpler answer.
+- Each database has a size quota by plan and allows 20 connections. Past the quota it
+  turns read-only (nothing is deleted): `get_project` shows `database.read_only` and a
+  note. Relay the note; keep app connection pools small.
+- The app should read these variables at start and fail with a clear message when
+  one is missing, so a deploy before the `add_*` call explains itself in the logs.
 - A public app with an owner-only action (an admin page, uploads only the owner
   makes) needs a token check: a secret in `env` the route compares against. Tell the
   owner the secret.
+- `remove_database` deletes the data for good: ask the user first.
 
 ## When it goes wrong
 
@@ -102,7 +112,7 @@ stays on its one machine:
 
 ## Other tools
 
-`get_project` (status, health, machine), `list_projects`, `get_project_visits` (who
+`get_project` (status, health, machine, data directory), `list_projects`, `get_project_visits` (who
 opened a shared link), `add_custom_domain` / `verify_custom_domain` /
 `remove_custom_domain`, `whoami`. Every tool and argument:
 <https://getspawnpoint.com/mcp.html>.
