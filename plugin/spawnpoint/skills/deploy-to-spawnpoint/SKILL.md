@@ -23,6 +23,8 @@ spawnpoint runs a small app on its own machine and returns a permanent share lin
    on disk as inline content. If the upload command is refused (a sandboxed shell or a
    proxy blocks `app.getspawnpoint.com`), say so and ask the user to allow that host for
    shell commands; only a bundle of a few small text files may fall back to inline.
+   When the upload command cannot run at all (a sandboxed chat app), send small binary
+   files such as images inline with `encoding: "base64"`, under about 3 MiB in total.
 3. **Call `deploy_project`** with `name` (a short slug), `runtime` (`static`, `node`,
    `python`, or `docker`), and `files` or `upload_id`. Optional: `entrypoint`, `env`,
    `visibility`, `teardown_in`.
