@@ -14,7 +14,7 @@ spawnpoint runs a small app on its own machine and returns a permanent share lin
    use its exclusions as `tar --exclude` flags, and do not deploy while it reports a
    block. An app you write yourself: hold to these as you write it: secrets only in
    `env`, never echoed back; read `PORT` and bind `0.0.0.0`; no debug mode; a token
-   check on admin and owner-only upload routes.
+   check on admin and owner-only upload or presign routes.
 2. **Pick the transport.** Files already on disk, more than a few small text files, or
    any image: call `create_upload`, run the `command` it returns from the app's
    directory (add `--exclude` for `.env` files and build caches), then deploy with
@@ -70,6 +70,7 @@ by what the app stores:
 |---|---|---|
 | A SQLite file, a JSON store, a small cache | the data directory, `SPAWNPOINT_DATA_DIR` (fallback `./data` locally) | none |
 | Relational data, or the user asks for Postgres | managed Postgres, `DATABASE_URL` | `add_database({ project_id })` |
+| User uploads, images, any file a browser sends or downloads | an S3 bucket, the `S3_*` variables | `add_storage({ project_id, public? })` |
 
 - The data directory survives redeploys and sleep (`/home/ubuntu/data`, or `/data`
   inside a docker container; `get_project` reports it as `data_dir`). It lives on one
@@ -81,12 +82,30 @@ by what the app stores:
 - Each database has a size quota by plan and allows 20 connections. Past the quota it
   turns read-only (nothing is deleted): `get_project` shows `database.read_only` and a
   note. Relay the note; keep app connection pools small.
-- The app should read these variables at start and fail with a clear message when
-  one is missing, so a deploy before the `add_*` call explains itself in the logs.
+- Call `add_storage` after the first deploy: the app restarts with `S3_ENDPOINT`,
+  `S3_REGION`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, and `S3_SECRET_ACCESS_KEY` set. S3 SDKs
+  do not read these names on their own: pass them to the client explicitly. The key
+  reaches this one bucket. Idempotent; the bucket and its files die with the project.
+- **Bytes never touch the machine.** The bucket is private by default: for an upload
+  the app signs a presigned PUT URL and the browser sends the file straight to the
+  bucket; for a download the app signs a presigned GET URL. Never stream uploads
+  through the app. The bucket already accepts these browser requests (CORS).
+- `public: true` (or `set_storage_visibility` later) only for files meant for
+  everyone, such as a public gallery: anyone can read them at `S3_PUBLIC_URL/<key>`,
+  outside the project's gate. Never for user documents. A public bucket serves files
+  by exact key, never a listing, so the app lists with its own key. A restricted
+  project with a public bucket gets a `warning`: relay it to the user.
+- The app must still start before the `add_*` call: the first deploy succeeds only
+  once the app serves a page. Read these variables when a request needs them, and
+  answer with a clear message while one is missing instead of exiting; the call's
+  restart brings the rest up.
 - A public app with an owner-only action (an admin page, uploads only the owner
-  makes) needs a token check: a secret in `env` the route compares against. Tell the
-  owner the secret.
-- `remove_database` deletes the data for good: ask the user first.
+  makes) needs a token check: a secret in `env` the route (or the presign endpoint)
+  compares against. Tell the owner the secret.
+- A bucket key that was printed, logged, or committed: `rotate_storage_key` replaces it
+  and the app keeps working; URLs signed with the old key stop working. `set_env`
+  cannot change the `S3_*` variables.
+- `remove_database` and `remove_storage` delete the data for good: ask the user first.
 
 ## When it goes wrong
 
@@ -105,14 +124,15 @@ by what the app stores:
 
 ## Ending a project
 
-- `terminate_project({ project_id, confirm: true })` destroys the machine and its data.
-  Ask the user first, in those words, and pass `confirm: true` only after they agree.
+- `terminate_project({ project_id, confirm: true })` destroys the machine and its data,
+  the database and the bucket included. Ask the user first, in those words, and pass
+  `confirm: true` only after they agree.
 - Temporary or a demo? Pass `teardown_in` (`45m`, `2h`, `1d`) to `deploy_project`, or
   call `schedule_teardown({ project_id, in })` later.
 
 ## Other tools
 
-`get_project` (status, health, machine, data directory), `list_projects`, `get_project_visits` (who
-opened a shared link), `add_custom_domain` / `verify_custom_domain` /
-`remove_custom_domain`, `whoami`. Every tool and argument:
+`get_project` (status, health, machine, data directory, database, bucket),
+`list_projects`, `get_project_visits` (who opened a shared link), `add_custom_domain` /
+`verify_custom_domain` / `remove_custom_domain`, `whoami`. Every tool and argument:
 <https://getspawnpoint.com/mcp.html>.

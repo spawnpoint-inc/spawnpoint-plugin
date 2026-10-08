@@ -1,6 +1,6 @@
 ---
 name: security-audit
-description: Audit an app before deploying it to spawnpoint, and fix what is safe to fix. Finds secrets and files that should not ship, checks the runtime contract (PORT, bind address), flags debug mode, open CORS, unauthenticated admin or upload routes, and credentials that reach the browser, and audits dependencies. Use before deploy_project, or when the user asks to check, audit, or review an app for security.
+description: Audit an app before deploying it to spawnpoint, and fix what is safe to fix. Finds secrets and files that should not ship, checks the runtime contract (PORT, bind address), flags debug mode, open CORS, unauthenticated admin, upload, or presign routes, private files in a public bucket, and credentials that reach the browser, and audits dependencies. Use before deploy_project, or when the user asks to check, audit, or review an app for security.
 argument-hint: [app-directory]
 allowed-tools: Bash(grep *) Bash(find *) Bash(npm audit *) Bash(npm install --package-lock-only *) Bash(uvx pip-audit *) Bash(docker build --check *) Bash(gitleaks dir *) Bash(osv-scanner *)
 ---
@@ -19,8 +19,8 @@ table and a verdict.
   file. The server refuses those bundles anyway.
 - **Fix what is safe and say so**: a port read from the environment, the bind
   address, a debug flag, a secret moved to `env`, an exclusion, and a token check on
-  an admin, debug, or owner-only upload route (generate the token, pass it as `env`,
-  and give it to the owner once in your reply). Then deploy. **Ask first** only
+  an admin, debug, or owner-only upload or presign route (generate the token, pass it
+  as `env`, and give it to the owner once in your reply). Then deploy. **Ask first** only
   before changing what the app's own users get: narrowing CORS, removing a route,
   or making a route they use private.
 - Never print a secret you found: file, line, and kind only.
@@ -32,7 +32,8 @@ table and a verdict.
 - [block] A credential-shaped string in any text file: the seven patterns in
   [patterns.md](patterns.md), with its one-line grep. Fix: move the value into `env`
   on `deploy_project` (or `set_env`), read it from the environment, and tell the
-  user to **rotate the key**: it is in this transcript now.
+  user to **rotate the key**: it is in this transcript now. A spawnpoint bucket's
+  key (the project's `S3_*` values) is rotated with `rotate_storage_key`.
 - [block] A credential file by name (the list in patterns.md). Fix: exclude it.
   `.npmrc` matters twice: it ships, and `npm ci` on the machine reads it.
 - [strip] `.env`, `.env.*`, `.git/`: exclude them. Name the variables `.env` held
@@ -81,15 +82,21 @@ mode; a `127.0.0.1` bind breaks public mode. Both are one-line fixes: make them.
   meant to call (posting a comment, adding a note) is a note, not a block: say it is
   open to anyone with the link.
 
-## 4. Data
+## 4. Data and storage
 
-- [block] A database URL or any other credential in client-side code or a public
-  build variable: the browser gets it.
-- [block if public, warn if restricted] An upload route anyone can call: strangers
-  fill the machine's disk. Owner-only uploads get the token check (above); uploads
-  the app's users make get a size cap.
+- [block] A database URL, an `S3_*` key, or any other credential in client-side code
+  or a public build variable: the browser gets it. The browser gets presigned URLs
+  the server signs, never the key.
+- [block if public, warn if restricted] An upload or presign endpoint anyone can
+  call: strangers fill the disk or the bucket, and the owner pays. Owner-only uploads
+  get the token check (above); uploads the app's users make get a size and content
+  type cap in what the app accepts or signs.
+- [warn] User documents in a public bucket (`add_storage` or
+  `set_storage_visibility` with `public: true`): anyone with a file's URL reads it,
+  and a restricted project's gate does not cover the bucket. Keep it private and
+  serve files through presigned GET URLs.
 - [warn] State kept inside the app's directory: every redeploy replaces it. Move it
-  outside, for example under `~/data`.
+  to the data directory (`SPAWNPOINT_DATA_DIR`).
 - [warn] SQL built from request input by string formatting: use the driver's
   parameters. Show the line.
 - [warn] A connection string or key written to logs.
@@ -106,8 +113,10 @@ one line in the table, not a stop.
 ## 6. Exposure
 
 Projects deploy `restricted` by default. If the audit found an unauthenticated
-admin, write, or upload route and the user wants a public link, recommend adding auth
-first, or staying restricted and inviting people with `share_project`.
+admin, write, upload, or presign route and the user wants a public link, recommend
+adding auth first, or staying restricted and inviting people with `share_project`.
+Restricted covers the app, not a public bucket: when a storage tool or
+`set_visibility` returns a `warning`, relay it.
 
 ## Output
 

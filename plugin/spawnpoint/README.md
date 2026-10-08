@@ -7,8 +7,9 @@ spawnpoint. It's **three skills** that drive the whole flow:
   in the browser via OAuth, no tokens to copy).
 - **`deploy-to-spawnpoint`**: builds + deploys an app and hands you the link.
 - **`security-audit`**: checks an app before it ships (secrets, files that should not
-  upload, the port and bind address spawnpoint needs, debug mode, open admin or upload
-  routes), fixes what is safe to fix, and stops the deploy on what is not.
+  upload, the port and bind address spawnpoint needs, debug mode, open admin, upload,
+  or presign routes, private files in a public bucket), fixes what is safe to fix, and
+  stops the deploy on what is not.
 
 ## Install
 
@@ -61,7 +62,7 @@ which is <https://app.getspawnpoint.com/console> for the hosted service.
 Full documentation lives at [getspawnpoint.com](https://getspawnpoint.com):
 
 - [Getting started](https://getspawnpoint.com/getting-started.html): install, sign in, deploy.
-- [MCP server](https://getspawnpoint.com/mcp.html): the endpoint and its five tools.
+- [MCP server](https://getspawnpoint.com/mcp.html): the endpoint and every tool.
 - [API tokens](https://getspawnpoint.com/api-tokens.html): `spk_live_` credentials for clients
   that cannot do OAuth.
 - [Security](https://getspawnpoint.com/security.html) and
