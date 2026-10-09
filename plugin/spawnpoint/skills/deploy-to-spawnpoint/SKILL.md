@@ -43,7 +43,8 @@ spawnpoint runs a small app on its own machine and returns a permanent share lin
   `node_modules`.
 - A `node` project with a `start` script runs `npm start` (and its `build` script
   first), so Next.js, Remix, Astro, Nuxt, SvelteKit, and Express deploy as themselves.
-  Omit `entrypoint` then; otherwise it defaults to `index.js` / `main.py`.
+  Omit `entrypoint` then; otherwise node defaults to `package.json` `main`, else
+  `server.js`, else `index.js`, and python to `main.py`.
 - `docker` builds the root `Dockerfile` on the machine; the container listens on 8080.
   Use it only for compiled languages or system packages: it starts slower.
 
