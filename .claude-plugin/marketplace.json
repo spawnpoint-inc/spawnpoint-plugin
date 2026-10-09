@@ -10,7 +10,7 @@
       "name": "spawnpoint",
       "source": "./plugin/spawnpoint",
       "description": "Deploy small apps to spawnpoint from your agent: it builds, spawnpoint puts it online, you get a link.",
-      "version": "0.8.1",
+      "version": "0.8.2",
       "author": {
         "name": "spawnpoint"
       }

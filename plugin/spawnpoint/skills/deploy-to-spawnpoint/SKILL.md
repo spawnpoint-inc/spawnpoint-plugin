@@ -59,6 +59,15 @@ New projects are `restricted`: the owner and invited emails only. Pass
 `set_visibility`. `share_project({ project_id, email })` invites one person (an email
 with the link, no account needed); `unshare_project` revokes.
 
+## MCP servers
+
+An MCP server is a `node` or `python` app: Streamable HTTP at `/mcp` on port 8080,
+stateless (Node SDK: `sessionIdGenerator: undefined`; Python: `FastMCP(..., host="0.0.0.0",
+stateless_http=True)` with `mcp<2` pinned, since 2.x renamed FastMCP). Deploy it `public`:
+a restricted project answers MCP clients with a sign-in page they cannot pass. Guard it
+with a generated token in `env`, checked as `Authorization: Bearer`, and give the user
+`claude mcp add --transport http <name> <url>/mcp --header "Authorization: Bearer <token>"`.
+
 ## Secrets and config
 
 Pass secrets in `env` or `set_env`, never in a file. `set_env({ project_id, set?,
