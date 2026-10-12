@@ -63,10 +63,18 @@ with the link, no account needed); `unshare_project` revokes.
 
 An MCP server is a `node` or `python` app: Streamable HTTP at `/mcp` on port 8080,
 stateless (Node SDK: `sessionIdGenerator: undefined`; Python: `FastMCP(..., host="0.0.0.0",
-stateless_http=True)` with `mcp<2` pinned, since 2.x renamed FastMCP). Deploy it `public`:
-a restricted project answers MCP clients with a sign-in page they cannot pass. Guard it
-with a generated token in `env`, checked as `Authorization: Bearer`, and give the user
-`claude mcp add --transport http <name> <url>/mcp --header "Authorization: Bearer <token>"`.
+stateless_http=True)` with `mcp<2` pinned, since 2.x renamed FastMCP). Who may call it
+sets the visibility:
+
+- The user and the people they share it with: leave it `restricted` (the default). The
+  gate signs MCP clients in through spawnpoint's own sign-in, the one Claude Code already
+  has, and admits the owner and shared emails. The app needs no auth of its own, and must
+  not check an `Authorization` header: the gate owns that header on a restricted project,
+  so a token of the app's own could never reach it. Give the user
+  `claude mcp add --transport http <name> <url>/mcp`; the client asks them to sign in.
+- Anyone with the link: deploy it `public`, guard it with a generated token in `env`,
+  checked as `Authorization: Bearer`, and give the user
+  `claude mcp add --transport http <name> <url>/mcp --header "Authorization: Bearer <token>"`.
 
 ## Secrets and config
 
