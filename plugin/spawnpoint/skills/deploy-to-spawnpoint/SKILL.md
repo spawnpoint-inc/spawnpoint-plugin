@@ -27,7 +27,7 @@ spawnpoint runs a small app on its own machine and returns a permanent share lin
    files such as images inline with `encoding: "base64"`, under about 3 MiB in total.
 3. **Call `deploy_project`** with `name` (a short slug), `runtime` (`static`, `node`,
    `python`, or `docker`), and `files` or `upload_id`. Optional: `entrypoint`, `env`,
-   `visibility`, `teardown_in`.
+   `visibility`, `teardown_in`, `inference` (open models, below).
 4. **Call `watch_deploy({ project_id })`** and relay each step it streams. It
    returns when the deploy settles or after `wait_seconds` (default 180). Still
    `spawning` then? Call it again: a deploy takes 1 to 3 minutes, sometimes up to 12.
@@ -80,6 +80,14 @@ sets the visibility:
 
 Pass secrets in `env` or `set_env`, never in a file. `set_env({ project_id, set?,
 unset? })` changes a live project's environment and restarts the app, no redeploy.
+
+## Model providers
+
+An app that calls OpenAI or Anthropic (the SDK, the Vercel AI SDK, LangChain, or raw
+HTTP) can run on open models through spawnpoint with no provider key: read the
+`open-models` skill before deploying it. It asks the user once, picks the model, and
+deploys with `inference: true`. An app you write that needs a model: use the open
+model from the start, no question needed.
 
 ## Storage: where the app keeps its data
 

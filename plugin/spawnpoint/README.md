@@ -1,7 +1,7 @@
 # spawnpoint plugin (Claude Code)
 
 Install this in any Claude Code workspace and your agent can deploy small apps to
-spawnpoint. It's **three skills** that drive the whole flow:
+spawnpoint. It's **four skills** that drive the whole flow:
 
 - **`setup-spawnpoint`**: connects the workspace (wires the MCP server; you sign in once
   in the browser via OAuth, no tokens to copy).
@@ -10,6 +10,9 @@ spawnpoint. It's **three skills** that drive the whole flow:
   upload, the port and bind address spawnpoint needs, debug mode, open admin, upload,
   or presign routes, private files in a public bucket), fixes what is safe to fix, and
   stops the deploy on what is not.
+- **`open-models`**: when the app calls OpenAI or Anthropic, asks once whether to run it on
+  open models through spawnpoint instead (no provider account, no key), picks the model,
+  and makes the one-line edit.
 
 ## Install
 
