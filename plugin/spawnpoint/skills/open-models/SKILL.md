@@ -51,6 +51,7 @@ question, since there is no provider to keep.
 | Images in the conversation (describe, read, compare) | `gemma-4-31b` | Data URIs work; `glm-5.3-flash` is the faster second choice |
 | Embeddings, search, RAG | `bge-m3` | 1024 dimensions; an index built on another model must be rebuilt |
 | Structured JSON output | any chat model | No `response_format`: ask for JSON in the prompt, parse, retry once on failure |
+| Sorting text into your own categories, scoring it on your own scale, or a yes/no with a probability (routing, moderation, triage, tagging) | `laya` | `POST $SPAWNPOINT_AI_URL/decisions` with `{model, state, questions: {id: {type: choice|score|noul, instructions, criteria}}}`, bearer `SPAWNPOINT_AI_KEY`; one pass, about 0.2 s, no text written. Over-confident as shipped: check it on a few labeled examples before trusting it with something that matters |
 | Image generation, video, audio, speech | keep the provider | Not on the open catalog: say so, keep that key in `env`, and move on |
 
 An app that does both (chat plus image generation) moves the chat and keeps the
@@ -72,6 +73,8 @@ their own, `OPENAI_BASE_URL` + `OPENAI_API_KEY` and `ANTHROPIC_BASE_URL` +
   process.env.OPENAI_API_KEY })` instead of the default instance; model from env.
 - **LangChain**: `ChatOpenAI(base_url=..., api_key=..., model=...)` from env.
 - **Raw HTTP**: the host becomes `SPAWNPOINT_AI_URL`, the bearer `SPAWNPOINT_AI_KEY`.
+  Decisions have no SDK: a plain POST, answer in `answers.<id>.choice`, `.score`
+  (with `.legend`), or `.noul` (the probability of yes), plus `.confidence`.
 
 Never write a key into a file, never print one, never hard-code the endpoint, and do
 not change a prompt. Keep a local fallback (`|| "gpt-oss-120b"`) so the app also runs
