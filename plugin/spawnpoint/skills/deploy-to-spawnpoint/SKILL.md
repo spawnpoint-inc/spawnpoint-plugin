@@ -59,7 +59,9 @@ well in chat. Never replace tags the app already has.
 New projects are `restricted`: the owner and invited emails only. Pass
 `visibility: "public"` when the user wants a link anyone can open, or flip it later with
 `set_visibility`. `share_project({ project_id, email })` invites one person (an email
-with the link, no account needed); `unshare_project` revokes.
+with the link, no account needed), or everyone at a company when `email` is its domain,
+`@company.com` (no invite goes out: give the user the link to pass along). Consumer
+domains like `@gmail.com` are refused. `unshare_project` revokes either.
 
 ## MCP servers
 
