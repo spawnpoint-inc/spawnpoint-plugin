@@ -157,6 +157,10 @@ by what the app stores:
 - Plan-limit error: the Free plan allows one live project. Offer to terminate one or to
   upgrade in the console.
 - `sleeping`: idle, not down. Visiting the URL wakes it in about 30 seconds.
+- Asleep and "cannot start" (the computer its machine lives on is full): waiting is
+  safe, and visitors see a page saying so. To move it now, ask the user, then redeploy
+  with `move_machine: true`; files the app kept in its data directory are deleted with
+  the old machine, while the bucket, database, env, and URL stay.
 - `transfer.over` on a static site: it served its plan's monthly data and shows a
   "taking a break" page until the 1st. Tell the user; upgrading lifts it at once.
 - Auth error: tell the user to run `/mcp`, select **spawnpoint**, and choose
