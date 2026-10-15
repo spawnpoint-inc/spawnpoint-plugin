@@ -31,13 +31,15 @@ spawnpoint runs a small app on its own machine and returns a permanent share lin
 4. **Call `watch_deploy({ project_id })`** and relay each step it streams. It
    returns when the deploy settles or after `wait_seconds` (default 180). Still
    `spawning` then? Call it again: a deploy takes 1 to 3 minutes, sometimes up to 12.
+   A static site is `running` at once.
    (No `watch_deploy`? Poll `get_project` every 15 seconds.)
 5. **Hand over `url`** once the status is `running`, and say who can open it. Never
    surface `machine_url`. The console is <https://app.getspawnpoint.com/console>.
 
 ## Runtimes
 
-- `static`: served as is. `node` and `python` must listen on port 8080 (`PORT` is set).
+- `static`: served by spawnpoint from storage: live in seconds, no machine, never asleep.
+  `node` and `python` must listen on port 8080 (`PORT` is set).
 - Dependencies install on the machine from `package.json` or `requirements.txt` at the
   bundle root (`package-lock.json` gets `npm ci`). Never vendor them or ship
   `node_modules`.
@@ -153,6 +155,8 @@ by what the app stores:
 - Plan-limit error: the Free plan allows one live project. Offer to terminate one or to
   upgrade in the console.
 - `sleeping`: idle, not down. Visiting the URL wakes it in about 30 seconds.
+- `transfer.over` on a static site: it served its plan's monthly data and shows a
+  "taking a break" page until the 1st. Tell the user; upgrading lifts it at once.
 - Auth error: tell the user to run `/mcp`, select **spawnpoint**, and choose
   **Authenticate**. No spawnpoint server at all: run `/spawnpoint:setup-spawnpoint`.
 - Inline calls are capped at 4 MiB, uploads at 20 MiB. Keep images web-sized (jpg or
