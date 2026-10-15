@@ -159,7 +159,7 @@ by what the app stores:
   "taking a break" page until the 1st. Tell the user; upgrading lifts it at once.
 - Auth error: tell the user to run `/mcp`, select **spawnpoint**, and choose
   **Authenticate**. No spawnpoint server at all: run `/spawnpoint:setup-spawnpoint`.
-- Inline calls are capped at 4 MiB, uploads at 20 MiB. Keep images web-sized (jpg or
+- Inline calls are capped at 4 MiB, uploads at 20 MiB (50 MiB for a static site). Keep images web-sized (jpg or
   webp, under 200 KB each), and put big files in a bucket with `upload_to_storage`
   instead of the bundle.
 
