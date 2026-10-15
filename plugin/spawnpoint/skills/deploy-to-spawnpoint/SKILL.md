@@ -99,6 +99,7 @@ by what the app stores:
 | A SQLite file, a JSON store, a small cache | the data directory, `SPAWNPOINT_DATA_DIR` (fallback `./data` locally) | none |
 | Relational data, or the user asks for Postgres | managed Postgres, `DATABASE_URL` | `add_database({ project_id })` |
 | User uploads, images, any file a browser sends or downloads | an S3 bucket, the `S3_*` variables | `add_storage({ project_id, public? })` |
+| Files already on disk the site links to: images, videos, installers, anything over the bundle cap | the same bucket, public | `add_storage({ project_id, public: true })`, then `upload_to_storage({ project_id, files })` |
 
 - The data directory survives redeploys and sleep (`/home/ubuntu/data`, or `/data`
   inside a docker container; `get_project` reports it as `data_dir`). It lives on one
@@ -123,6 +124,13 @@ by what the app stores:
   outside the project's gate. Never for user documents. A public bucket serves files
   by exact key, never a listing, so the app lists with its own key. A restricted
   project with a public bucket gets a `warning`: relay it to the user.
+- Files you have on disk that the site or app needs (a gallery's photos, a video, an
+  installer, anything that would push the bundle over 20 MiB): `upload_to_storage` with
+  the paths, relative to the folder you run its `command` from; each path is the file's
+  key. Run the command with bash from that folder, then link to each file's `url`
+  (public bucket). No server is involved and the key never leaves spawnpoint. At most 50
+  files per call; refused while the bucket is over its plan's limit. This works for a
+  `static` project too, which is the usual case.
 - The app must still start before the `add_*` call: the first deploy succeeds only
   once the app serves a page. Read these variables when a request needs them, and
   answer with a clear message while one is missing instead of exiting; the call's
@@ -148,7 +156,8 @@ by what the app stores:
 - Auth error: tell the user to run `/mcp`, select **spawnpoint**, and choose
   **Authenticate**. No spawnpoint server at all: run `/spawnpoint:setup-spawnpoint`.
 - Inline calls are capped at 4 MiB, uploads at 20 MiB. Keep images web-sized (jpg or
-  webp, under 200 KB each).
+  webp, under 200 KB each), and put big files in a bucket with `upload_to_storage`
+  instead of the bundle.
 
 ## Ending a project
 
