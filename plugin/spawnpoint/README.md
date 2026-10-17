@@ -4,12 +4,12 @@ spawnpoint is the easiest way to bring your software online. With this plugin, C
 can put an app it built for you online and hand you a link, in a chat, in Cowork, or in
 Claude Code. The link is private until you share it with someone's email address.
 
-The plugin brings the spawnpoint connector (the tools Claude uses to deploy) and four
+The plugin brings the spawnpoint connector (the tools Claude uses to deploy) and three
 skills that tell Claude how to use them:
 
-- **`setup-spawnpoint`**: connects your Claude to spawnpoint. You sign in once in the
-  browser; there are no keys to copy.
-- **`deploy-to-spawnpoint`**: deploys an app and hands you the link.
+- **`deploy-to-spawnpoint`**: deploys an app and hands you the link, and walks you
+  through signing in the first time. You sign in once in the browser; there are no keys
+  to copy.
 - **`security-audit`**: checks an app before it ships (secrets, files that should not
   upload, the port and bind address spawnpoint needs, debug mode, open admin, upload,
   or presign routes, private files in a public bucket), fixes what is safe to fix, and

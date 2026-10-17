@@ -1,11 +1,33 @@
 ---
 name: deploy-to-spawnpoint
-description: Deploy a small app to spawnpoint and get a public link. Use when the user asks to deploy, ship, or launch an app via spawnpoint.
+description: Deploy a small app to spawnpoint and get a public link, and get the user signed in to spawnpoint. Use when the user asks to deploy, ship, or launch an app via spawnpoint, to set up, connect, or sign in to spawnpoint, or when a spawnpoint tool answers that it is not signed in.
 ---
 
 # Deploy to spawnpoint
 
 spawnpoint runs a small app on its own machine and returns a permanent share link.
+
+## Signing in
+
+This plugin carries the spawnpoint server, so there is nothing to install or register
+from here. Call `whoami`: when it answers, the user is connected. When it answers 401 or
+says there is no grant, give the user the steps for where they are, in one reply, and
+never ask for a token or key (there is none to copy):
+
+- **Claude Code** (a terminal, an IDE, or the desktop app's Code tab): restart Claude
+  Code if the plugin was just installed, run `/mcp`, select **spawnpoint** (listed as
+  `plugin:spawnpoint:spawnpoint`), choose **Authenticate**, sign in with an email in
+  the browser, and click **Approve**. Also tell them once to run `/plugin`, open
+  **Marketplaces**, select **spawnpoint**, and turn on **auto-update**: third-party
+  marketplaces do not update on their own, and the skills change often.
+- **A chat or Cowork** (claude.ai, the desktop app, mobile): open **Customize**, then
+  **Plugins**, select **spawnpoint**, open its **Connectors** tab, click **Connect**, sign
+  in, and click **Approve**; then ask again, or start a new chat if the tools still do
+  not appear. Never run an installer or `claude mcp add` from a chat's sandbox: that sets
+  up the sandbox, not the user's Claude.
+
+No spawnpoint tools at all in Claude Code means the plugin's server did not load: run
+`curl -fsSL https://getspawnpoint.com/install | bash`, then restart Claude Code.
 
 ## The workflow
 
@@ -165,10 +187,7 @@ by what the app stores:
   the old machine, while the bucket, database, env, and URL stay.
 - `transfer.over` on a static site: it served its plan's monthly data and shows a
   "taking a break" page until the 1st. Tell the user; upgrading lifts it at once.
-- Auth error: tell the user to run `/mcp`, select **spawnpoint**, and choose
-  **Authenticate**. In a chat or Cowork, they reconnect spawnpoint on the plugin's
-  **Connectors** tab (**Customize**, **Plugins**, **spawnpoint**) instead. No spawnpoint
-  server at all: use the `setup-spawnpoint` skill.
+- Not signed in (a 401, or no grant): give the steps under "Signing in".
 - Inline calls are capped at 4 MiB, uploads at 20 MiB (50 MiB for a static site). Keep images web-sized (jpg or
   webp, under 200 KB each), and put big files in a bucket with `upload_to_storage`
   instead of the bundle.
