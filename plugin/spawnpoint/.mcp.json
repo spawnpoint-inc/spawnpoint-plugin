@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "spawnpoint": {
+      "type": "http",
+      "url": "https://app.getspawnpoint.com/mcp"
+    }
+  }
+}

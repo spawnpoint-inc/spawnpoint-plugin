@@ -11,7 +11,8 @@ commands yourself; don't just describe them. There are **no tokens to copy**: si
 happens in the browser via OAuth, and Claude Code stores the credentials itself.
 
 > **Not installed yet?** If the user doesn't have the plugin at all, that's two commands
-> first. They give you these skills plus the MCP wiring:
+> first. They give you these skills plus the MCP wiring (the plugin carries the
+> spawnpoint server itself, and the installer also wires the user's other agents):
 >
 > ```bash
 > curl -fsSL https://getspawnpoint.com/install | bash
@@ -28,6 +29,25 @@ happens in the browser via OAuth, and Claude Code stores the credentials itself.
 > the app's runtime picks up the new server on its next reload. The one step that stays
 > the user's is the browser **Authenticate** click in section 4: that approval is a
 > deliberate human-in-the-loop and cannot be automated.
+
+## In a chat or in Cowork: no terminal step
+
+When you are not Claude Code (a chat in claude.ai, the Claude desktop app, or the mobile
+app, or a Cowork task), skip steps 1 to 5. Do not run the installer or `claude mcp add`,
+even when a sandbox lets you: they would set up the sandbox, not the user's Claude. The
+plugin already carries the spawnpoint connector; the user only connects it. Give them
+these steps in one reply:
+
+1. Open **Customize**, then **Plugins**, select **spawnpoint**, and open its
+   **Connectors** tab. (Added spawnpoint by hand instead? It is under **Settings**,
+   **Connectors**.)
+2. Click **Connect** on spawnpoint. A browser opens spawnpoint's sign-in: enter an email,
+   click the link spawnpoint emails, then click **Approve**.
+3. Come back and ask again. If the spawnpoint tools still do not appear, start a new
+   chat.
+
+Once the tools appear, call `whoami` to confirm, then deploy with the
+`deploy-to-spawnpoint` skill.
 
 ## 0. Already registered? Check before anything else
 
@@ -82,7 +102,8 @@ instructions, even when an earlier step failed.
 
 Tell the user to **restart Claude Code** (or reconnect), then:
 
-1. Run `/mcp`, select **spawnpoint**, and choose **Authenticate**.
+1. Run `/mcp`, select **spawnpoint** (listed as `plugin:spawnpoint:spawnpoint` when the
+   plugin brought it), and choose **Authenticate**.
 2. A browser opens the spawnpoint consent page. If they're signed out, they sign in first
    (enter an email, then click the magic link spawnpoint emails them).
 3. Click **Approve**. Claude Code receives the tokens and stores them securely itself

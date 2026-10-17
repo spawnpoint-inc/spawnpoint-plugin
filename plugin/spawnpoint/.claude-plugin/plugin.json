@@ -1,8 +1,12 @@
 {
   "name": "spawnpoint",
+  "displayName": "spawnpoint",
+  "version": "0.12.0",
   "description": "Deploy small apps to spawnpoint: your agent builds it, spawnpoint puts it online, you get a shareable link.",
-  "version": "0.11.3",
-  "author": { "name": "spawnpoint" },
+  "author": {
+    "name": "spawnpoint",
+    "url": "https://getspawnpoint.com"
+  },
   "homepage": "https://getspawnpoint.com",
   "license": "MIT"
 }

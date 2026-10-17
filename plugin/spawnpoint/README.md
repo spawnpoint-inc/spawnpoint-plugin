@@ -1,73 +1,75 @@
-# spawnpoint plugin (Claude Code)
+# spawnpoint plugin
 
-Install this in any Claude Code workspace and your agent can deploy small apps to
-spawnpoint. It's **four skills** that drive the whole flow:
+spawnpoint is the easiest way to bring your software online. With this plugin, Claude
+can put an app it built for you online and hand you a link, in a chat, in Cowork, or in
+Claude Code. The link is private until you share it with someone's email address.
 
-- **`setup-spawnpoint`**: connects the workspace (wires the MCP server; you sign in once
-  in the browser via OAuth, no tokens to copy).
-- **`deploy-to-spawnpoint`**: builds + deploys an app and hands you the link.
+The plugin brings the spawnpoint connector (the tools Claude uses to deploy) and four
+skills that tell Claude how to use them:
+
+- **`setup-spawnpoint`**: connects your Claude to spawnpoint. You sign in once in the
+  browser; there are no keys to copy.
+- **`deploy-to-spawnpoint`**: deploys an app and hands you the link.
 - **`security-audit`**: checks an app before it ships (secrets, files that should not
   upload, the port and bind address spawnpoint needs, debug mode, open admin, upload,
   or presign routes, private files in a public bucket), fixes what is safe to fix, and
   stops the deploy on what is not.
-- **`open-models`**: when the app calls OpenAI or Anthropic, asks once whether to run it on
-  open models through spawnpoint instead (no provider account, no key), picks the model,
-  and makes the one-line edit.
+- **`open-models`**: when the app calls OpenAI or Anthropic, asks once whether to run it
+  on open models through spawnpoint instead (no provider account, no key), picks the
+  model, and makes the one-line edit.
 
-## Install
+## Install in claude.ai or the Claude desktop app
+
+1. Open **Customize**, then **Plugins**, then **Add**, then **Add marketplace**, and enter
+   `https://github.com/spawnpoint-inc/spawnpoint-plugin`.
+2. Install **spawnpoint**, open its **Connectors** tab, and click **Connect**.
+3. Sign in to spawnpoint in the browser that opens and click **Approve**.
+
+The plugin also reaches Claude Code on the same account the next time it starts.
+
+## Install in Claude Code
 
 ```bash
 curl -fsSL https://getspawnpoint.com/install | bash
 ```
 
-Or by hand:
+The installer also sets up your other coding agents. Or by hand:
 
 ```bash
 claude plugin marketplace add spawnpoint-inc/spawnpoint-plugin
 claude plugin install spawnpoint@spawnpoint
 ```
 
-From a local clone, point at the **repo root** (that's where
+Restart Claude Code, run `/mcp`, select **spawnpoint**, choose **Authenticate**, and
+approve in the browser. Claude Code keeps the sign-in and refreshes it itself.
+
+From a local clone of the app repo, point at the **repo root** (that's where
 `.claude-plugin/marketplace.json` lives, not this `plugin/` directory):
+`claude plugin marketplace add /path/to/spawnpoint`.
 
-```bash
-claude plugin marketplace add /path/to/spawnpoint
-claude plugin install spawnpoint@spawnpoint
-```
+## Use it
 
-Restart Claude Code afterwards so the skills load.
+Ask Claude to build something and put it online: "make a page where my running club
+says who is coming on Saturday, and deploy it with spawnpoint." Claude builds the app,
+deploys it, and gives you the link. Ask it to share the link with a teammate's email,
+to change the app, or to take it down.
 
-## Use it: all skill-driven
+Your apps are listed in the console at <https://app.getspawnpoint.com/console>.
 
-Just talk to the agent:
+## Data
 
-1. **"set up spawnpoint"**
-   It wires the MCP connection for you. Restart Claude Code, run `/mcp` → spawnpoint →
-   **Authenticate**, and approve in the browser. Claude Code keeps the credentials in your
-   OS keychain and refreshes them automatically: no tokens to copy, ever.
-2. **"deploy this to spawnpoint"** (or "build me a small X and deploy it")
-   It ships the app and gives you a public link.
-
-Manage or terminate projects in your spawnpoint console: `<your spawnpoint origin>/console`,
-which is <https://app.getspawnpoint.com/console> for the hosted service.
-
-## Requirements
-
-- A reachable spawnpoint origin. spawnpoint is a hosted service; use its origin when you
-  have one. For development, a locally running spawnpoint works the same way (default
-  `https://app.getspawnpoint.com`; a dev instance runs at `http://localhost:8080`).
-
-> The setup skill asks for the origin, so hosted and local setups differ only in the URL
-> you give it.
+When you deploy, Claude sends spawnpoint the app's files, its name, and the settings
+and secrets you give it, over HTTPS to app.getspawnpoint.com, signed in as you.
+spawnpoint stores them to run the app. When you share an app, spawnpoint emails the
+address you give it. The `security-audit` skill can run `npm audit`, `pip-audit`, or
+`osv-scanner` on your computer, which sends the app's list of dependencies to the npm
+registry or the OSV vulnerability database. The
+[privacy policy](https://getspawnpoint.com/privacy.html) has the details.
 
 ## Docs
 
-Full documentation lives at [getspawnpoint.com](https://getspawnpoint.com):
-
 - [Getting started](https://getspawnpoint.com/getting-started.html): install, sign in, deploy.
 - [MCP server](https://getspawnpoint.com/mcp.html): the endpoint and every tool.
-- [API tokens](https://getspawnpoint.com/api-tokens.html): `spk_live_` credentials for clients
-  that cannot do OAuth.
 - [Security](https://getspawnpoint.com/security.html) and
   [Terms](https://getspawnpoint.com/terms.html).
 

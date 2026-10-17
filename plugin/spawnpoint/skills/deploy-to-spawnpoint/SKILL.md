@@ -75,7 +75,9 @@ sets the visibility:
   has, and admits the owner and shared emails. The app needs no auth of its own, and must
   not check an `Authorization` header: the gate owns that header on a restricted project,
   so a token of the app's own could never reach it. Give the user
-  `claude mcp add --transport http <name> <url>/mcp`; the client asks them to sign in.
+  `claude mcp add --transport http <name> <url>/mcp` (in claude.ai or the desktop app:
+  **Settings**, **Connectors**, **Add custom connector** with `<url>/mcp`); the client
+  asks them to sign in.
 - Anyone with the link: deploy it `public`, guard it with a generated token in `env`,
   checked as `Authorization: Bearer`, and give the user
   `claude mcp add --transport http <name> <url>/mcp --header "Authorization: Bearer <token>"`.
@@ -164,7 +166,9 @@ by what the app stores:
 - `transfer.over` on a static site: it served its plan's monthly data and shows a
   "taking a break" page until the 1st. Tell the user; upgrading lifts it at once.
 - Auth error: tell the user to run `/mcp`, select **spawnpoint**, and choose
-  **Authenticate**. No spawnpoint server at all: run `/spawnpoint:setup-spawnpoint`.
+  **Authenticate**. In a chat or Cowork, they reconnect spawnpoint on the plugin's
+  **Connectors** tab (**Customize**, **Plugins**, **spawnpoint**) instead. No spawnpoint
+  server at all: use the `setup-spawnpoint` skill.
 - Inline calls are capped at 4 MiB, uploads at 20 MiB (50 MiB for a static site). Keep images web-sized (jpg or
   webp, under 200 KB each), and put big files in a bucket with `upload_to_storage`
   instead of the bundle.
