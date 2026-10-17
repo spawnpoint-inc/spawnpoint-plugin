@@ -171,6 +171,15 @@ by what the app stores:
   cannot change the `S3_*` variables.
 - `remove_database` and `remove_storage` delete the data for good: ask the user first.
 
+## Sleep and always on
+
+An app on a machine sleeps after an hour with no visitors, and the next visit waits about
+30 seconds. To keep one up, call `set_always_on({ project_id, always_on: true })`; a
+static site never sleeps. Pro includes 3 always-on apps, Business 20, Free none: `whoami`
+shows the `plan`, its `subscription` (`active`, `complimentary`, or `none`), and
+`always_on_used` against `always_on_limit`. Relay a refusal as given, and at the limit
+ask the user which app to turn off rather than turning one off yourself.
+
 ## When it goes wrong
 
 - `error`: call `get_project_logs({ project_id })`, read the push log (the real pip or
@@ -180,7 +189,8 @@ by what the app stores:
   live log.
 - Plan-limit error: the Free plan allows one live project. Offer to terminate one or to
   upgrade in the console.
-- `sleeping`: idle, not down. Visiting the URL wakes it in about 30 seconds.
+- `sleeping`: idle, not down. Visiting the URL wakes it in about 30 seconds; to stop it
+  sleeping, see Sleep and always on.
 - Asleep and "cannot start" (the computer its machine lives on is full): waiting is
   safe, and visitors see a page saying so. To move it now, ask the user, then redeploy
   with `move_machine: true`; files the app kept in its data directory are deleted with
