@@ -1,6 +1,6 @@
 # spawnpoint plugin
 
-spawnpoint is the easiest way to bring your software online. With this plugin, Claude
+spawnpoint is the place where your team's AI lives. With this plugin, Claude
 can put an app it built for you online and hand you a link, in a chat, in Cowork, or in
 Claude Code. The link is private until you share it with someone's email address.
 
