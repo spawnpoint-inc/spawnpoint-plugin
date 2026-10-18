@@ -60,8 +60,10 @@ Your apps are listed in the console at <https://app.getspawnpoint.com/console>.
 
 When you deploy, Claude sends spawnpoint the app's files, its name, and the settings
 and secrets you give it, over HTTPS to app.getspawnpoint.com, signed in as you.
-spawnpoint stores them to run the app. When you share an app, spawnpoint emails the
-address you give it. The `security-audit` skill can run `npm audit`, `pip-audit`, or
+spawnpoint stores them to run the app. Files you ask Claude to put in an app's storage
+or your team's shared space go from your computer straight to spawnpoint's storage on
+Amazon S3, through short-lived signed links that spawnpoint hands out. When you share an
+app, spawnpoint emails the address you give it. The `security-audit` skill can run `npm audit`, `pip-audit`, or
 `osv-scanner` on your computer, which sends the app's list of dependencies to the npm
 registry or the OSV vulnerability database. The
 [privacy policy](https://getspawnpoint.com/privacy.html) has the details.

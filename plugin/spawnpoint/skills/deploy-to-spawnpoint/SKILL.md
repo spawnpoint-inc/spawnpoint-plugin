@@ -7,7 +7,7 @@ description: Deploy a small app to spawnpoint and get a public link, and get the
 
 spawnpoint runs a small app on its own machine and returns a permanent share link.
 
-These skills are spawnpoint plugin version 0.15.2. When `whoami` reports a newer
+These skills are spawnpoint plugin version 0.15.3. When `whoami` reports a newer
 `plugin_version`, tell the user once that their spawnpoint plugin is out of date: in
 claude.ai or the desktop app, **Customize**, **Plugins**, **spawnpoint**, **Update**; in
 Claude Code, `/plugin`, **Marketplaces**, **spawnpoint**, update. When the user asks
