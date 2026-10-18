@@ -73,4 +73,4 @@ registry or the OSV vulnerability database. The
 - [Security](https://getspawnpoint.com/security.html) and
   [Terms](https://getspawnpoint.com/terms.html).
 
-Questions: [founders@getspawnpoint.com](mailto:founders@getspawnpoint.com).
+Questions: [mannan@getspawnpoint.com](mailto:mannan@getspawnpoint.com).
