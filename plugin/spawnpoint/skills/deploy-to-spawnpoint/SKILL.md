@@ -7,7 +7,7 @@ description: Deploy a small app to spawnpoint and get a public link, and get the
 
 spawnpoint runs a small app on its own machine and returns a permanent share link.
 
-These skills are spawnpoint plugin version 0.15.1. When `whoami` reports a newer
+These skills are spawnpoint plugin version 0.15.2. When `whoami` reports a newer
 `plugin_version`, tell the user once that their spawnpoint plugin is out of date: in
 claude.ai or the desktop app, **Customize**, **Plugins**, **spawnpoint**, **Update**; in
 Claude Code, `/plugin`, **Marketplaces**, **spawnpoint**, update. When the user asks
@@ -209,7 +209,7 @@ by what the app stores:
 
 An app on a machine sleeps after an hour with no visitors, and the next visit waits about
 30 seconds. To keep one up, call `set_always_on({ project_id, always_on: true })`; a
-static site never sleeps. Pro includes 3 always-on apps, Team 10, Business 20, Free none: `whoami`
+static site never sleeps. The plan sets how many apps can be always on: `whoami`
 shows the `plan`, its `subscription` (`active`, `complimentary`, or `none`), and
 `always_on_used` against `always_on_limit`. Relay a refusal as given, and at the limit
 ask the user which app to turn off rather than turning one off yourself.
@@ -221,9 +221,9 @@ ask the user which app to turn off rather than turning one off yourself.
   place and keeps the URL.
 - Running but broken: `get_project_logs({ project_id, kind: "runtime" })` is the app's
   live log.
-- Plan-limit error: the Free plan allows one live project. Offer to terminate one or to
-  upgrade in the console. On a team, relay the error: a team admin upgrades the team on
-  its page.
+- Plan-limit error: the Free plan allows one live project. Offer to terminate one, and
+  relay the error, which links the page listing what each plan includes. On a team, the
+  team's plan is a team admin's to change.
 - `sleeping`: idle, not down. Visiting the URL wakes it in about 30 seconds; to stop it
   sleeping, see Sleep and always on.
 - Asleep and "cannot start" (the computer its machine lives on is full): waiting is
