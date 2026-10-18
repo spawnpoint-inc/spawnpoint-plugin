@@ -7,7 +7,7 @@ description: Deploy a small app to spawnpoint and get a public link, and get the
 
 spawnpoint runs a small app on its own machine and returns a permanent share link.
 
-These skills are spawnpoint plugin version 0.15.0. When `whoami` reports a newer
+These skills are spawnpoint plugin version 0.15.1. When `whoami` reports a newer
 `plugin_version`, tell the user once that their spawnpoint plugin is out of date: in
 claude.ai or the desktop app, **Customize**, **Plugins**, **spawnpoint**, **Update**; in
 Claude Code, `/plugin`, **Marketplaces**, **spawnpoint**, update. When the user asks
@@ -108,6 +108,16 @@ the `plan` and limits `whoami` reports are the team's. Say so when you hand over
   tool argument picks the team.
 - Members, roles, and the team's plan live on the team's page in the console (the
   **Team** tab), and only a team admin changes them. No tool does.
+- The team space is one place for the team's files (priorities, customer lists,
+  briefs) that every member and every team app reads. `list_team_space` shows what is
+  there and `read_team_space` reads a file; check it when a task needs the team's
+  context. `upload_to_team_space` puts files from disk into it. A team app reads the
+  space from its `SPAWNPOINT_TEAM_S3_*` variables (a read-only key), which it gets on
+  its first deploy after the space has a file.
+- Team skills: the server's instructions list the team's skills by name. When the
+  user's task matches one, call `get_skill` and follow its `SKILL.md`. To save one for
+  the team, `publish_skill` takes a folder with a `SKILL.md` (front matter `name` and
+  `description`) the way `deploy_project` takes an app.
 
 ## MCP servers
 

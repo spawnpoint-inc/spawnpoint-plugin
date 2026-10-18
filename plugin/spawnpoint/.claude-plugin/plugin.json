@@ -1,7 +1,7 @@
 {
   "name": "spawnpoint",
   "displayName": "spawnpoint",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "description": "Deploy small apps to spawnpoint: your agent builds it, spawnpoint puts it online, you get a shareable link.",
   "author": {
     "name": "spawnpoint",
