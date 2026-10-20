@@ -1,6 +1,6 @@
 {
   "name": "spawnpoint",
-  "description": "Deploy the small apps your agent builds and get a shareable link. The place where your team's AI lives.",
+  "description": "The place where your team's AI lives: the apps, tools, and MCP servers your agent builds, online behind a private link.",
   "owner": {
     "name": "spawnpoint",
     "url": "https://getspawnpoint.com"
@@ -9,7 +9,7 @@
     {
       "name": "spawnpoint",
       "source": "./plugin/spawnpoint",
-      "description": "Deploy small apps to spawnpoint from your agent: it builds, spawnpoint puts it online, you get a link.",
+      "description": "The place where your team's AI lives: Claude puts the apps, tools, and MCP servers it builds online and hands you a private link to share.",
       "version": "0.15.3",
       "author": {
         "name": "spawnpoint"

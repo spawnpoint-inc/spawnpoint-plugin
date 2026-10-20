@@ -2,7 +2,7 @@
   "name": "spawnpoint",
   "displayName": "spawnpoint",
   "version": "0.15.3",
-  "description": "Deploy small apps to spawnpoint: your agent builds it, spawnpoint puts it online, you get a shareable link.",
+  "description": "The place where your team's AI lives: Claude puts the apps, tools, and MCP servers it builds online and hands you a private link to share.",
   "author": {
     "name": "spawnpoint",
     "url": "https://getspawnpoint.com"
