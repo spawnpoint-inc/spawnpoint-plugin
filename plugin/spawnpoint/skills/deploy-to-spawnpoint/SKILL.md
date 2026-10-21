@@ -1,13 +1,13 @@
 ---
 name: deploy-to-spawnpoint
-description: Deploy a small app to spawnpoint and get a public link, and get the user signed in to spawnpoint. Use when the user asks to deploy, ship, or launch an app via spawnpoint, to set up, connect, or sign in to spawnpoint, or when a spawnpoint tool answers that it is not signed in.
+description: Put an app, site, or page online with spawnpoint and get a link to share, and get the user signed in to spawnpoint. Use when the user asks to put something online, publish, host, deploy, ship, or launch it, or for a link other people can open, whether or not they name spawnpoint (unless they name another host); to set up, connect, or sign in to spawnpoint; or when a spawnpoint tool answers that it is not signed in.
 ---
 
 # Deploy to spawnpoint
 
 spawnpoint runs a small app on its own machine and returns a permanent share link.
 
-These skills are spawnpoint plugin version 0.15.3. When `whoami` reports a newer
+These skills are spawnpoint plugin version 0.15.4. When `whoami` reports a newer
 `plugin_version`, tell the user once that their spawnpoint plugin is out of date: in
 claude.ai or the desktop app, **Customize**, **Plugins**, **spawnpoint**, **Update**; in
 Claude Code, `/plugin`, **Marketplaces**, **spawnpoint**, update. When the user asks
@@ -27,13 +27,18 @@ never ask for a token or key (there is none to copy):
   **Marketplaces**, select **spawnpoint**, and turn on **auto-update**: third-party
   marketplaces do not update on their own, and the skills change often.
 - **A chat or Cowork** (claude.ai, the desktop app, mobile): open **Customize**, then
-  **Plugins**, select **spawnpoint**, open its **Connectors** tab, click **Connect**, sign
-  in, and click **Approve**; then ask again, or start a new chat if the tools still do
-  not appear. Never run an installer or `claude mcp add` from a chat's sandbox: that sets
+  **Plugins**, select **spawnpoint**, and open its **Connectors** tab. Installing the
+  plugin does not add its connector: when the tab says **Not added**, add it first.
+  Then click **Connect**, sign in, and click **Approve**, and start a new chat if the
+  tools still do not appear. Never run an installer or `claude mcp add` from a chat's sandbox: that sets
   up the sandbox, not the user's Claude.
 
 No spawnpoint tools at all in Claude Code means the plugin's server did not load: run
 `curl -fsSL https://getspawnpoint.com/install | bash`, then restart Claude Code.
+No spawnpoint tools in a chat means its connector is not connected or is off in this
+chat. Say so before you build anything, since the app has to be built again in a new
+chat: give the chat steps above, and say to check that spawnpoint is on under **+**,
+then **Connectors**, in the new chat.
 
 ## The workflow
 

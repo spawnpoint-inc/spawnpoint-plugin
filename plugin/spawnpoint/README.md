@@ -22,7 +22,8 @@ skills that tell Claude how to use them:
 
 1. Open **Customize**, then **Plugins**, then **Add**, then **Add marketplace**, and enter
    `https://github.com/spawnpoint-inc/spawnpoint-plugin`.
-2. Install **spawnpoint**, open its **Connectors** tab, and click **Connect**.
+2. Install **spawnpoint** and open its **Connectors** tab. Installing does not add the
+   connector: when it says **Not added**, add it, then click **Connect**.
 3. Sign in to spawnpoint in the browser that opens and click **Approve**.
 
 The plugin also reaches Claude Code on the same account the next time it starts.

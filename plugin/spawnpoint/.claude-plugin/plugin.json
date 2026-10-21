@@ -1,17 +1,12 @@
 {
   "name": "spawnpoint",
   "displayName": "spawnpoint",
-  "version": "0.15.3",
-  "description": "The place where your team's AI lives: Claude puts the apps, tools, and MCP servers it builds online and hands you a private link to share.",
+  "version": "0.15.4",
+  "description": "The place where your team's AI lives: Claude puts the apps, tools, and MCP servers it builds online and hands you a private link to share. To finish setting up, open this plugin's Connectors tab, add spawnpoint, and connect it.",
   "author": {
     "name": "spawnpoint",
     "url": "https://getspawnpoint.com"
   },
   "homepage": "https://getspawnpoint.com",
-  "license": "MIT",
-  "icon": "./logo.png",
-  "documentationUrl": "https://getspawnpoint.com/getting-started.html",
-  "supportUrl": "https://github.com/spawnpoint-inc/spawnpoint-plugin/issues",
-  "privacyPolicyUrl": "https://getspawnpoint.com/privacy.html",
-  "termsOfServiceUrl": "https://getspawnpoint.com/terms.html"
+  "license": "MIT"
 }
