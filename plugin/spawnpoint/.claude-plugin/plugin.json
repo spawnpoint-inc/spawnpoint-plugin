@@ -1,7 +1,7 @@
 {
   "name": "spawnpoint",
   "displayName": "spawnpoint",
-  "version": "0.15.4",
+  "version": "0.15.5",
   "description": "The place where your team's AI lives: Claude puts the apps, tools, and MCP servers it builds online and hands you a private link to share. To finish setting up, open this plugin's Connectors tab, add spawnpoint, and connect it.",
   "author": {
     "name": "spawnpoint",

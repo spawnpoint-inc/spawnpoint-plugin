@@ -7,7 +7,7 @@ description: Put an app, site, or page online with spawnpoint and get a link to 
 
 spawnpoint runs a small app on its own machine and returns a permanent share link.
 
-These skills are spawnpoint plugin version 0.15.4. When `whoami` reports a newer
+These skills are spawnpoint plugin version 0.15.5. When `whoami` reports a newer
 `plugin_version`, tell the user once that their spawnpoint plugin is out of date: in
 claude.ai or the desktop app, **Customize**, **Plugins**, **spawnpoint**, **Update**; in
 Claude Code, `/plugin`, **Marketplaces**, **spawnpoint**, update. When the user asks
@@ -208,6 +208,9 @@ by what the app stores:
 - A bucket key that was printed, logged, or committed: `rotate_storage_key` replaces it
   and the app keeps working; URLs signed with the old key stop working. `set_env`
   cannot change the `S3_*` variables.
+- A managed `DATABASE_URL` that was printed, logged, or committed:
+  `rotate_database_password` gives the database a new password and the app keeps
+  working; the tables and data stay. `set_env` cannot change it either.
 - `remove_database` and `remove_storage` delete the data for good: ask the user first.
 
 ## Sleep and always on

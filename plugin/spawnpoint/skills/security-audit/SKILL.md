@@ -33,7 +33,8 @@ table and a verdict.
   [patterns.md](patterns.md), with its one-line grep. Fix: move the value into `env`
   on `deploy_project` (or `set_env`), read it from the environment, and tell the
   user to **rotate the key**: it is in this transcript now. A spawnpoint bucket's
-  key (the project's `S3_*` values) is rotated with `rotate_storage_key`.
+  key (the project's `S3_*` values) is rotated with `rotate_storage_key`, and a
+  managed database's `DATABASE_URL` with `rotate_database_password`.
 - [block] A credential file by name (the list in patterns.md). Fix: exclude it.
   `.npmrc` matters twice: it ships, and `npm ci` on the machine reads it.
 - [strip] `.env`, `.env.*`, `.git/`: exclude them. Name the variables `.env` held
