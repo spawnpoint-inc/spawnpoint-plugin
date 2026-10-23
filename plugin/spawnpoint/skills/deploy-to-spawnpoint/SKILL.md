@@ -122,7 +122,9 @@ the `plan` and limits `whoami` reports are the team's. Say so when you hand over
 - Team skills: the server's instructions list the team's skills by name. When the
   user's task matches one, call `get_skill` and follow its `SKILL.md`. To save one for
   the team, `publish_skill` takes a folder with a `SKILL.md` (front matter `name` and
-  `description`) the way `deploy_project` takes an app.
+  `description`) the way `deploy_project` takes an app. A skill another member
+  published can be replaced only by them or by a team admin; if the call refuses, tell
+  the user who published it rather than publishing under a new name.
 
 ## MCP servers
 
