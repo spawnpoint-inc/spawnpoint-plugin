@@ -8,7 +8,7 @@ description: Put an app, site, or page online with spawnpoint and get a link to 
 spawnpoint runs a small app on its own machine and returns a share link that survives
 redeploys.
 
-These skills are spawnpoint plugin version 0.16.1. When `whoami` reports a newer
+These skills are spawnpoint plugin version 0.16.2. When `whoami` reports a newer
 `plugin_version`, tell the user once that their spawnpoint plugin is out of date: in
 claude.ai or the desktop app, **Customize**, **Plugins**, **spawnpoint**, **Update**; in
 Claude Code, `/plugin`, **Marketplaces**, **spawnpoint**, update. When the user asks
@@ -238,8 +238,9 @@ ask the user which app to turn off rather than turning one off yourself.
 - Running but broken: `get_project_logs({ project_id, kind: "runtime" })` is the app's
   live log.
 - Plan-limit error: the Free plan allows one live project. Offer to terminate one, and
-  relay the error, which links the page listing what each plan includes. On a team, the
-  team's plan is a team admin's to change.
+  relay the error, which links the page listing what each plan includes. On a team,
+  terminating makes no room, so do not offer it: the team's plan is a team admin's to
+  change. A team holds apps once a team admin with Pro covers it, on the team's page.
 - `sleeping`: idle, not down. Visiting the URL wakes it in about 30 seconds; to stop it
   sleeping, see Sleep and always on.
 - Asleep and "cannot start" (the computer its machine lives on is full): waiting is
