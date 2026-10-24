@@ -7,7 +7,7 @@ description: Put an app, site, or page online with spawnpoint and get a link to 
 
 spawnpoint runs a small app on its own machine and returns a permanent share link.
 
-These skills are spawnpoint plugin version 0.15.5. When `whoami` reports a newer
+These skills are spawnpoint plugin version 0.16.0. When `whoami` reports a newer
 `plugin_version`, tell the user once that their spawnpoint plugin is out of date: in
 claude.ai or the desktop app, **Customize**, **Plugins**, **spawnpoint**, **Update**; in
 Claude Code, `/plugin`, **Marketplaces**, **spawnpoint**, update. When the user asks
@@ -96,6 +96,11 @@ member of the team too; see Teams). Pass
 with the link, no account needed), or everyone at a company when `email` is its domain,
 `@company.com` (no invite goes out: give the user the link to pass along). Consumer
 domains like `@gmail.com` are refused. `unshare_project` revokes either.
+
+When the user names the address they want, such as lunch-orders.spwt.app, pass
+`slug: "lunch-orders"` to `deploy_project`, or call `set_share_slug` on an existing
+project. The old address keeps working for 30 days. Do not pick an address the user did
+not ask for: a generated one is private by default.
 
 ## Teams
 
