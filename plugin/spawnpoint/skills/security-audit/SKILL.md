@@ -37,8 +37,15 @@ table and a verdict.
   managed database's `DATABASE_URL` with `rotate_database_password`.
 - [block] A credential file by name (the list in patterns.md). Fix: exclude it.
   `.npmrc` matters twice: it ships, and `npm ci` on the machine reads it.
-- [strip] `.env`, `.env.*`, `.git/`: exclude them. Name the variables `.env` held
-  (never the values) and offer to pass each one as `env`.
+- [strip] `.env`, `.env.*`, `.git/`: exclude them. Pass every variable `.env` holds
+  as `env` on `deploy_project`, with its value from the file (not `PORT` or
+  `NODE_ENV`). Name them in the table, and never print a value or any part of one,
+  even one that looks like a placeholder.
+- [block] Code that reads `.env` as a file (`fs.readFileSync('.env')`, `open('.env')`,
+  `dotenv_values(".env")`): no `.env` reaches the machine, so every value comes back
+  empty. Fix: read `process.env` or `os.environ`; `dotenv.config()` and `load_dotenv()`
+  may stay. To find them:
+  `grep -rnE --exclude-dir=node_modules 'readFileSync\(.*\.env|open\(.*\.env|dotenv_values' .`
 - [exclude] `node_modules/`, `.venv/`, `venv/`, `__pycache__/`, `.next/`, `dist/` and
   `build/` when a build script exists, `.DS_Store`, `*.log`. These become the
   `tar --exclude` flags for `create_upload`'s command.
@@ -68,6 +75,9 @@ mode; a `127.0.0.1` bind breaks public mode. Both are one-line fixes: make them.
   file or in `env`: those are built into the browser bundle.
 - [block] Docker `ARG` or `ENV` named like a secret with a literal value. Run `docker
   build --check .` when docker is on PATH.
+- [block] A Dockerfile line that `COPY`s or `ADD`s `.env` or `.env.*` (and a `CMD` that
+  sources it): the server refuses the deploy. Fix: remove them; the variables reach
+  the container as `env`.
 - [warn] A literal `secret_key`/`SECRET_KEY`, or Django's `django-insecure-` prefix:
   sessions become forgeable. Fix: generate one and pass it as `env`.
 - [warn] CORS allowing every origin with credentials (`cors({ origin: '*',

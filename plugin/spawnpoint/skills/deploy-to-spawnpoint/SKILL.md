@@ -8,7 +8,7 @@ description: Put an app, site, or page online with spawnpoint and get a link to 
 spawnpoint runs a small app on its own machine and returns a share link that survives
 redeploys.
 
-These skills are spawnpoint plugin version 0.16.3. When `whoami` reports a newer
+These skills are spawnpoint plugin version 0.16.4. When `whoami` reports a newer
 `plugin_version`, tell the user once that their spawnpoint plugin is out of date: in
 claude.ai or the desktop app, **Customize**, **Plugins**, **spawnpoint**, **Update**; in
 Claude Code, `/plugin`, **Marketplaces**, **spawnpoint**, update. When the user asks
@@ -155,6 +155,21 @@ sets the visibility:
 
 Pass secrets in `env` or `set_env`, never in a file. `set_env({ project_id, set?,
 unset? })` changes a live project's environment and restarts the app, no redeploy.
+
+A `.env` file never ships, and nothing on the machine is named `.env`: the app gets its
+variables as its environment.
+
+- Put every variable from the app's `.env` in `deploy_project`'s `env`, with its value
+  from that file (skip `PORT` and `NODE_ENV`: spawnpoint sets them). Never make up a
+  replacement value, and never repeat a value or any part of one in your reply.
+- `dotenv.config()` and `load_dotenv()` keep working: with no file, the app reads its
+  environment. Code that reads `.env` as a file (`fs.readFileSync('.env')`,
+  `open('.env')`, `dotenv_values()`) must read `process.env` or `os.environ` instead.
+- A loader that stops when the file is missing (Go's `godotenv.Load()` followed by
+  `log.Fatal`, and the like): read the environment, or ignore its missing-file error.
+- Never `COPY` or `ADD` a `.env` in a Dockerfile: the deploy is refused.
+- A `deploy_project` answer whose `note` names variables: the app lacks them. Pass
+  them with `set_env`.
 
 ## Model providers
 
