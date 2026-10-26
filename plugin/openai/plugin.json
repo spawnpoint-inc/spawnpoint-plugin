@@ -1,11 +1,11 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "spawnpoint",
-  "version": "0.16.2",
+  "version": "0.16.3",
   "description": "Put the web apps you build online with a private link, and share them with your team.",
   "author": {
     "name": "spawnpoint",
-    "email": "mannan@getspawnpoint.com",
+    "email": "support@getspawnpoint.com",
     "url": "https://getspawnpoint.com"
   },
   "homepage": "https://getspawnpoint.com",
