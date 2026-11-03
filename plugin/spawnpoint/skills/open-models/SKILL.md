@@ -32,7 +32,9 @@ with keeping the provider as a plain option:
 
 > This app calls OpenAI for chat and embeddings. spawnpoint can run it on open models
 > (gpt-oss-120b for chat, bge-m3 for embeddings) with no OpenAI key and no provider
-> account. Switch, or keep OpenAI?
+> account. Requests would go through spawnpoint to OpenRelay, which runs the models and
+> keeps request content under its own policy
+> (https://getspawnpoint.com/privacy.html#who-else). Switch, or keep OpenAI?
 
 Never switch without the answer. Never ask twice for one project: a project that
 already exists without an `ai` block on `get_project` was deployed on the provider on
@@ -40,6 +42,18 @@ purpose, so redeploy it as it is unless the user raises it. When the user alread
 which they want (in the request, or earlier in the conversation), skip the question.
 An app you are writing from scratch that needs a model: use the open model with no
 question, since there is no provider to keep.
+
+Every ask names where requests go, as above. When the user asks for more, or when the
+app would send other people's personal data or confidential material (customer records,
+call transcripts, mailbox contents) to the model, give the rest: each request goes through spawnpoint to OpenRelay, which runs the open models on
+its own GPU network, including capacity from providers it works with, and does not
+publish where a request runs. spawnpoint stores no prompts or answers, only a usage record
+per call (project, model, tokens, cost, time). OpenRelay's privacy policy
+(https://openrelay.inc/privacy) says it collects request and response content, keeps it
+while spawnpoint's account is active, and may make de-identified data from it that it can
+license to others. Say this plainly before switching such an app,
+and offer keeping the provider, with its own key and retention terms, as the choice for
+data that must not go there. https://getspawnpoint.com/how-apps-run.html has the details.
 
 ## 3. Choose
 
@@ -53,6 +67,9 @@ question, since there is no provider to keep.
 | Structured JSON output | any chat model | No `response_format`: ask for JSON in the prompt, parse, retry once on failure |
 | Sorting text into your own categories, scoring it on your own scale, or a yes/no with a probability (routing, moderation, triage, tagging) | `laya` | `POST $SPAWNPOINT_AI_URL/decisions` with `{model, state, questions: {id: {type: choice|score|noul, instructions, criteria}}}`, bearer `SPAWNPOINT_AI_KEY`; one pass, about 0.2 s, no text written. Over-confident as shipped: check it on a few labeled examples before trusting it with something that matters |
 | Image generation, video, audio, speech | keep the provider | Not on the open catalog: say so, keep that key in `env`, and move on |
+
+When the user's policy rules out some models (by maker or by country), choose among the
+rest and say which one you used; when none fits, keep the provider.
 
 An app that does both (chat plus image generation) moves the chat and keeps the
 provider for the rest; that still needs the provider key in `env`. Current catalog:
@@ -82,8 +99,9 @@ on a developer's machine with their own `OPENAI_BASE_URL`.
 
 ## 5. Tell the user
 
-Say the app runs on `<model>` through spawnpoint, that no OpenAI or Anthropic key was
-needed, and which rule applies (the reasoning budget, the thinking block, JSON by
+Say the app runs on `<model>` through spawnpoint, that its requests go through OpenRelay
+(the line from the ask; for an app you wrote from scratch, this is the first time the
+user hears it), that no OpenAI or Anthropic key was needed, and which rule applies (the reasoning budget, the thinking block, JSON by
 prompt, the embedding dimension). `get_project` shows the `ai` block: `base_url`,
 `key_env`, `model`, `models`. The key dies with the project. A deploy refused with
 "Open models are not enabled on this spawnpoint": deploy without `inference` and with

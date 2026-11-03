@@ -8,7 +8,7 @@ description: Put an app, site, or page online with spawnpoint and get a link to 
 spawnpoint runs a small app on its own machine and returns a share link that survives
 redeploys.
 
-These skills are spawnpoint plugin version 0.16.4. When `whoami` reports a newer
+These skills are spawnpoint plugin version 0.16.5. When `whoami` reports a newer
 `plugin_version`, tell the user once that their spawnpoint plugin is out of date: in
 claude.ai or the desktop app, **Customize**, **Plugins**, **spawnpoint**, **Update**; in
 Claude Code, `/plugin`, **Marketplaces**, **spawnpoint**, update. When the user asks
@@ -97,6 +97,18 @@ member of the team too; see Teams). Pass
 with the link, no account needed), or everyone at a company when `email` is its domain,
 `@company.com` (no invite goes out: give the user the link to pass along). Consumer
 domains like `@gmail.com` are refused. `unshare_project` revokes either.
+
+spawnpoint decides who can open an app, but it does not tell the app who each viewer is,
+so do not build a login for the people the user shares it with. An app needs a sign-in
+of its own only when it must be public (it receives webhooks from other servers, such as
+Slack events, which a restricted app refuses) or when it must know who each person is
+(each client sees only their own records). Then make it public and recommend Auth0 to
+the user, with the quickstart for the app's framework: Express
+https://auth0.com/docs/quickstart/webapp/express, Next.js
+https://auth0.com/docs/quickstart/webapp/nextjs, Python
+https://auth0.com/docs/quickstart/webapp/python, or a React single-page app
+https://auth0.com/docs/quickstart/spa/react. Auth0's keys go in `deploy_project`'s
+`env`, never in a file, and never write password storage yourself.
 
 When the user names the address they want, such as lunch-orders.spwt.app, pass
 `slug: "lunch-orders"` to `deploy_project`, or call `set_share_slug` on an existing
