@@ -8,7 +8,7 @@ description: Put an app, site, or page online with spawnpoint and get a link to 
 spawnpoint runs a small app on its own machine and returns a share link that survives
 redeploys.
 
-These skills are spawnpoint plugin version 0.16.5. When `whoami` reports a newer
+These skills are spawnpoint plugin version 0.16.6. When `whoami` reports a newer
 `plugin_version`, tell the user once that their spawnpoint plugin is out of date: in
 claude.ai or the desktop app, **Customize**, **Plugins**, **spawnpoint**, **Update**; in
 Claude Code, `/plugin`, **Marketplaces**, **spawnpoint**, update. When the user asks
@@ -48,7 +48,8 @@ then **Connectors**, in the new chat.
    use its exclusions as `tar --exclude` flags, and do not deploy while it reports a
    block. An app you write yourself: hold to these as you write it: secrets only in
    `env`, never echoed back; read `PORT` and bind `0.0.0.0`; no debug mode; a token
-   check on admin and owner-only upload or presign routes.
+   check on admin and owner-only upload or presign routes (on a restricted app, the
+   viewer's email does it: see Who can open it).
 2. **Pick the transport.** Files already on disk, more than a few small text files, or
    any image: call `create_upload`, run the `command` it returns from the app's
    directory (add `--exclude` for `.env` files and build caches), then deploy with
@@ -98,12 +99,20 @@ with the link, no account needed), or everyone at a company when `email` is its 
 `@company.com` (no invite goes out: give the user the link to pass along). Consumer
 domains like `@gmail.com` are refused. `unshare_project` revokes either.
 
-spawnpoint decides who can open an app, but it does not tell the app who each viewer is,
-so do not build a login for the people the user shares it with. An app needs a sign-in
-of its own only when it must be public (it receives webhooks from other servers, such as
-Slack events, which a restricted app refuses) or when it must know who each person is
-(each client sees only their own records). Then make it public and recommend Auth0 to
-the user, with the quickstart for the app's framework: Express
+spawnpoint decides who can open an app, and it tells a restricted app who each viewer
+is: every request carries the `X-Spawnpoint-Viewer-Email` header, the lowercased email
+the person verified (the owner's own visits carry the owner's). So do not build a login
+for the people the user shares it with. When the app must treat people differently (each
+client sees only their own records, only one person may publish), keep it restricted,
+share it with each person, and have the server read that header and compare it with the
+addresses the user named (put them in `env`, such as `PUBLISHERS`, so `set_env` changes
+them). Only a server can read it, so such an app is `node` or `python`, never `static`.
+A request without the header gets no special rights. Never trust it on a public
+app: a public app never gets it, and anyone can send one there. An app needs a sign-in of
+its own only when it must be public (it receives webhooks from other servers, such as
+Slack events, which a restricted app refuses) or must let in people who are not on its
+share list (anyone may sign up). Then make it public and recommend Auth0 to the user,
+with the quickstart for the app's framework: Express
 https://auth0.com/docs/quickstart/webapp/express, Next.js
 https://auth0.com/docs/quickstart/webapp/nextjs, Python
 https://auth0.com/docs/quickstart/webapp/python, or a React single-page app
