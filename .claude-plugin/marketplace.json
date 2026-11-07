@@ -1,6 +1,6 @@
 {
   "name": "spawnpoint",
-  "description": "The place where your team's AI lives: the apps, tools, and MCP servers your agent builds, online behind a private link.",
+  "description": "The launchpad for your AI-enabled business: the apps, tools, and MCP servers your agent builds, online behind a private link.",
   "owner": {
     "name": "spawnpoint",
     "url": "https://getspawnpoint.com"
@@ -9,7 +9,7 @@
     {
       "name": "spawnpoint",
       "source": "./plugin/spawnpoint",
-      "description": "The place where your team's AI lives: Claude puts the apps, tools, and MCP servers it builds online and hands you a private link to share. To finish setting up, open this plugin's Connectors tab, add spawnpoint, and connect it.",
+      "description": "The launchpad for your AI-enabled business: Claude puts the apps, tools, and MCP servers it builds online and hands you a private link to share. To finish setting up, open this plugin's Connectors tab, add spawnpoint, and connect it.",
       "version": "0.16.6",
       "author": {
         "name": "spawnpoint"
