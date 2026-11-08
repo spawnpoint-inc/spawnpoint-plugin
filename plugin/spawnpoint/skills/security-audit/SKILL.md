@@ -29,7 +29,7 @@ table and a verdict.
 
 ## 1. What ships
 
-- [block] A credential-shaped string in any text file: the seven patterns in
+- [block] A credential-shaped string in any text file: the nine patterns in
   [patterns.md](patterns.md), with its one-line grep. Fix: move the value into `env`
   on `deploy_project` (or `set_env`), read it from the environment, and tell the
   user to **rotate the key**: it is in this transcript now. A spawnpoint bucket's
