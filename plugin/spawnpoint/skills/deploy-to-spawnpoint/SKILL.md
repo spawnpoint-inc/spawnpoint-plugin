@@ -8,7 +8,7 @@ description: Put an app, site, or page online with spawnpoint and get a link to 
 spawnpoint runs a small app on its own machine and returns a share link that survives
 redeploys.
 
-These skills are spawnpoint plugin version 0.16.8. When `whoami` reports a newer
+These skills are spawnpoint plugin version 0.17.0. When `whoami` reports a newer
 `plugin_version`, tell the user once that their spawnpoint plugin is out of date: in
 claude.ai or the desktop app, **Customize**, **Plugins**, **spawnpoint**, **Update**; in
 Claude Code, `/plugin`, **Marketplaces**, **spawnpoint**, update. When the user asks
@@ -109,15 +109,34 @@ addresses the user named (put them in `env`, such as `PUBLISHERS`, so `set_env` 
 them). Only a server can read it, so such an app is `node` or `python`, never `static`.
 A request without the header gets no special rights. Never trust it on a public
 app: a public app never gets it, and anyone can send one there. An app needs a sign-in of
-its own only when it must be public (it receives webhooks from other servers, such as
-Slack events, which a restricted app refuses) or must let in people who are not on its
-share list (anyone may sign up). Then make it public and recommend Auth0 to the user,
+its own only when it must let in people who are not on its share list (anyone may sign
+up). Then make it public and recommend Auth0 to the user,
 with the quickstart for the app's framework: Express
 https://auth0.com/docs/quickstart/webapp/express, Next.js
 https://auth0.com/docs/quickstart/webapp/nextjs, Python
 https://auth0.com/docs/quickstart/webapp/python, or a React single-page app
 https://auth0.com/docs/quickstart/spa/react. Auth0's keys go in `deploy_project`'s
 `env`, never in a file, and never write password storage yourself.
+
+### Webhooks, callbacks, and public pages
+
+A restricted app refuses every request that has no verified viewer, so Slack, Stripe, or
+HubSpot cannot deliver a webhook to it, and an OAuth callback works only for people
+already signed in to the app (theirs keeps working as it is, with the viewer header).
+Do not make the app public for that. Keep it restricted and list the paths with
+`set_public_paths({ project_id, paths: ["/slack/events"] })`: anyone can open a listed
+path with no sign-in, and every other path still needs it. Each call replaces the whole
+list (`[]` clears it). List only the exact paths a sender needs, never a folder that
+also holds other routes: `/api/*` opens the whole API. A folder entry ends in `/*`
+(`/p/*`); a page for people outside the share list needs its own files' folders too,
+such as `/assets/*` for Vite or `/_next/static/*` for Next.js. spawnpoint checks no one
+on a listed path and sends no `X-Spawnpoint-Viewer-Email` there, so a webhook route
+must verify the sender's signature (Slack's signing secret, Stripe's webhook secret,
+kept in `env`), and an OAuth callback must check the `state` value it sent. List a callback
+only when people outside the share list sign in through it: a listed path carries no
+viewer header. Give the user each path's `url` from the answer to register with the sender.
+A sleeping app takes about 30 seconds to wake and a sender may give up first, so open
+the app before registering a webhook, or keep it always on.
 
 When the user names the address they want, such as lunch-orders.spwt.app, pass
 `slug: "lunch-orders"` to `deploy_project`, or call `set_share_slug` on an existing

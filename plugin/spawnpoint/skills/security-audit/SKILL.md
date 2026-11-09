@@ -92,6 +92,17 @@ mode; a `127.0.0.1` bind breaks public mode. Both are one-line fixes: make them.
   owner-only routes get the token check (above). A write route the app's users are
   meant to call (posting a comment, adding a note) is a note, not a block: say it is
   open to anyone with the link.
+- [block] A webhook route on a path the project lists as public (`get_project`'s
+  `public_paths`, or one about to be listed with `set_public_paths`) that does not
+  verify the sender's signature (Slack's signing secret, Stripe's `constructEvent`
+  with the webhook secret, HubSpot's request signature): spawnpoint checks no one on a
+  public path, so anyone can call it. Fix: verify the signature with the secret from
+  `env` and answer `401` when it fails.
+- [warn] An OAuth callback on a public path that does not check the `state` value it
+  sent (or PKCE): a callback carries no signature, so state is its check. Do not add
+  a signature check to it.
+- [warn] A public folder entry (`/api/*`) that covers routes beyond the ones a sender
+  or a page needs: list the exact paths instead.
 
 ## 4. Data and storage
 
