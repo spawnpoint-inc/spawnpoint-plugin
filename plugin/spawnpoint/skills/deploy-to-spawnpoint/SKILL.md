@@ -8,7 +8,7 @@ description: Put an app, site, or page online with spawnpoint and get a link to 
 spawnpoint runs a small app on its own machine and returns a share link that survives
 redeploys.
 
-These skills are spawnpoint plugin version 0.16.7. When `whoami` reports a newer
+These skills are spawnpoint plugin version 0.16.8. When `whoami` reports a newer
 `plugin_version`, tell the user once that their spawnpoint plugin is out of date: in
 claude.ai or the desktop app, **Customize**, **Plugins**, **spawnpoint**, **Update**; in
 Claude Code, `/plugin`, **Marketplaces**, **spawnpoint**, update. When the user asks
@@ -255,7 +255,7 @@ by what the app stores:
 - A managed `DATABASE_URL` that was printed, logged, or committed:
   `rotate_database_password` gives the database a new password and the app keeps
   working; the tables and data stay. `set_env` cannot change it either.
-- `remove_database` and `remove_storage` delete the data for good: ask the user first.
+- `remove_storage` deletes the bucket and its files for good, and `remove_database` takes the database away from the app (it can be restored from the console for 7 days): ask the user first.
 
 ## Sleep and always on
 
@@ -293,7 +293,8 @@ ask the user which app to turn off rather than turning one off yourself.
 ## Ending a project
 
 - `terminate_project({ project_id, confirm: true })` destroys the machine and its data,
-  the database and the bucket included. Ask the user first, in those words, and pass
+  the bucket included; the database is kept 7 days, restorable from the console into a
+  project deployed under the same name. Ask the user first, in those words, and pass
   `confirm: true` only after they agree.
 - Temporary or a demo? Pass `teardown_in` (`45m`, `2h`, `1d`) to `deploy_project`, or
   call `schedule_teardown({ project_id, in })` later.
