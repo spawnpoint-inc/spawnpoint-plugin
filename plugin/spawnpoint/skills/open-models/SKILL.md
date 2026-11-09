@@ -71,6 +71,17 @@ data that must not go there. https://getspawnpoint.com/how-apps-run.html has the
 When the user's policy rules out some models (by maker or by country), choose among the
 rest and say which one you used; when none fits, keep the provider.
 
+A team can approve which models its apps may call, and spawnpoint's model endpoint
+refuses every other model. Before you choose for a team app, call `whoami`: when
+`team.ai_models` is there, or the project's `ai` block has `approved_only: true` (its
+`models` is then the list), choose only from that list. If the table's choice is not on
+it, take the closest approved model that serves the same call: the same kind (chat,
+embeddings), and for an app kept on the Anthropic SDK one that takes that SDK (the server's
+instructions and the `ai` block's note name them; with none, keep the provider). Tell the user which model and
+why. If no approved model serves the call, keep the provider and tell the user the team
+has not approved an open model for this. No tool changes the list: a team admin changes
+it in the console.
+
 An app that does both (chat plus image generation) moves the chat and keeps the
 provider for the rest; that still needs the provider key in `env`. Current catalog:
 `get_project`'s `ai.models` once a project has a key, or `GET <base_url>/models`.
