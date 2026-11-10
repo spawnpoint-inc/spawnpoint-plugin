@@ -8,7 +8,7 @@ description: Put an app, site, or page online with spawnpoint and get a link to 
 spawnpoint runs a small app on its own machine and returns a share link that survives
 redeploys.
 
-These skills are spawnpoint plugin version 0.18.0. When `whoami` reports a newer
+These skills are spawnpoint plugin version 0.18.1. When `whoami` reports a newer
 `plugin_version`, tell the user once that their spawnpoint plugin is out of date: in
 claude.ai or the desktop app, **Customize**, **Plugins**, **spawnpoint**, **Update**; in
 Claude Code, `/plugin`, **Marketplaces**, **spawnpoint**, update. When the user asks
@@ -304,6 +304,63 @@ by what the app stores:
   `rotate_database_password` gives the database a new password and the app keeps
   working; the tables and data stay. `set_env` cannot change it either.
 - `remove_storage` deletes the bucket and its files for good, and `remove_database` takes the database away from the app (it can be restored from the console for 7 days): ask the user first.
+
+## Scheduled work
+
+For work on a timer (a morning digest, polling an inbox, a nightly export), never use a
+timer inside the app (`setInterval`, `node-cron`, APScheduler): it stops while the app
+sleeps. Put the job in a `POST` route, deploy, then
+`set_schedule({ project_id, path: "/tasks/digest", cron: "0 8 * * *", timezone: "Europe/London" })`.
+`cron` is five fields (minute, hour, day of month, month, day of week) read in
+`timezone` (an IANA name; ask the user's city if you do not know it, UTC otherwise).
+At each time spawnpoint wakes the app, calls the route, and lets it sleep again, so it
+needs no `set_always_on`. Then call `run_schedule({ project_id, name })` to try it: a
+401 means the signature check is wrong, a 404 that the route is missing. Setting the same
+`name` again changes a schedule; `remove_schedule` removes one. A refusal names the
+plan's limit (Free: one schedule, at most hourly, 60-second runs): relay it and offer
+what fits.
+
+The route must check the signature, since anyone could call it: compute HMAC-SHA256
+over `t + "." + rawBody` with `SPAWNPOINT_RUN_SECRET` (spawnpoint sets it), compare in
+constant time, refuse a `t` more than 5 minutes off, and answer 401 otherwise. A failed
+run is retried with the same `run_id`, so keep the ids of finished runs (a file in
+`SPAWNPOINT_DATA_DIR`, or a table) and answer 200 at once for one already done. Do the
+work before answering 2xx, keep it under the timeout, and key it by `scheduled_for`.
+
+```js
+const crypto = require("node:crypto");
+app.post("/tasks/digest", express.raw({ type: "application/json" }), (req, res) => {
+  const [, t, v1] = /t=(\d+),v1=([0-9a-f]{64})/.exec(req.get("X-Spawnpoint-Signature") || "") || [];
+  const want = crypto.createHmac("sha256", process.env.SPAWNPOINT_RUN_SECRET).update(t + "." + req.body).digest("hex");
+  if (!v1 || !crypto.timingSafeEqual(Buffer.from(v1), Buffer.from(want)) || Math.abs(Date.now() / 1000 - t) > 300) return res.sendStatus(401);
+  const { run_id, scheduled_for } = JSON.parse(req.body);
+  const doneFile = require("node:path").join(process.env.SPAWNPOINT_DATA_DIR || ".", "runs-done.txt");
+  const fs = require("node:fs");
+  if (fs.existsSync(doneFile) && fs.readFileSync(doneFile, "utf8").split("\n").includes(run_id)) return res.sendStatus(200);
+  // ...the work for scheduled_for, then:
+  fs.appendFileSync(doneFile, run_id + "\n");
+  res.sendStatus(200);
+});
+```
+
+```python
+import hashlib, hmac, json, os, re, time
+@app.post("/tasks/digest")
+def digest():
+    m = re.fullmatch(r"t=(\d+),v1=([0-9a-f]{64})", request.headers.get("X-Spawnpoint-Signature", ""))
+    body = request.get_data()
+    want = hmac.new(os.environ["SPAWNPOINT_RUN_SECRET"].encode(), m[1].encode() + b"." + body, hashlib.sha256).hexdigest() if m else ""
+    if not m or not hmac.compare_digest(m[2], want) or abs(time.time() - int(m[1])) > 300:
+        return "", 401
+    run = json.loads(body)
+    done = os.path.join(os.environ.get("SPAWNPOINT_DATA_DIR", "."), "runs-done.txt")
+    if os.path.exists(done) and run["run_id"] in open(done).read().split():
+        return "", 200
+    # ...the work for run["scheduled_for"], then:
+    with open(done, "a") as f:
+        f.write(run["run_id"] + "\n")
+    return "", 200
+```
 
 ## Sleep and always on
 
