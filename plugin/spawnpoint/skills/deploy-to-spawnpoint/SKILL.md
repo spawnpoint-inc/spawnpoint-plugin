@@ -8,7 +8,7 @@ description: Put an app, site, or page online with spawnpoint and get a link to 
 spawnpoint runs a small app on its own machine and returns a share link that survives
 redeploys.
 
-These skills are spawnpoint plugin version 0.17.5. When `whoami` reports a newer
+These skills are spawnpoint plugin version 0.17.6. When `whoami` reports a newer
 `plugin_version`, tell the user once that their spawnpoint plugin is out of date: in
 claude.ai or the desktop app, **Customize**, **Plugins**, **spawnpoint**, **Update**; in
 Claude Code, `/plugin`, **Marketplaces**, **spawnpoint**, update. When the user asks
@@ -61,8 +61,9 @@ then **Connectors**, in the new chat.
    When the upload command cannot run at all (a sandboxed chat app), send small binary
    files such as images inline with `encoding: "base64"`, under about 3 MiB in total.
 3. **Call `deploy_project`** with `name` (a short slug), `runtime` (`static`, `node`,
-   `python`, or `docker`), and `files` or `upload_id`. Optional: `entrypoint`, `env`,
-   `visibility`, `teardown_in`, `inference` (open models, below).
+   `python`, or `docker`), `machine_size` (see Machine size), and `files` or
+   `upload_id`. Optional: `entrypoint`, `env`, `visibility`, `teardown_in`,
+   `inference` (open models, below).
 4. **Call `watch_deploy({ project_id })`** and relay each step it streams. It
    returns when the deploy settles or after `wait_seconds` (default 180). Still
    `spawning` then? Call it again: a deploy takes 1 to 3 minutes, sometimes up to 12.
@@ -88,6 +89,34 @@ then **Connectors**, in the new chat.
 An app that serves HTML with no Open Graph tags gets `og:title`, `og:description`, and
 `<meta name="twitter:card" content="summary">` in its first deploy, so the link unfurls
 well in chat. Never replace tags the app already has.
+
+## Machine size
+
+spawnpoint sizes the machine from the app, and you are the one who reads the app. Before
+every `deploy_project` that is not `static`, glance at the code and pass `machine_size`.
+The user does not choose it, so do not ask them.
+
+- `micro` (1 GiB): a small server with no build step, such as an Express or Flask API,
+  a webhook receiver, or a page with a form. A `docker` image of the same shape on a
+  slim base.
+- `small` (2 GiB): a typical app. Pick it when you see a database client (`pg`,
+  `prisma`, `sqlalchemy`, `psycopg`), a framework build (`next`, `vite`, `nuxt`,
+  `@remix-run`, `astro`, `@sveltejs/kit`, or any `build` script in `package.json`),
+  `django`, or more than about 20 dependencies.
+- `medium` (4 GiB): heavy memory or builds. Pick it for a headless browser
+  (`puppeteer`, `playwright`, `selenium`, chromium in a `Dockerfile`), data and ML
+  libraries (`pandas`, `numpy`, `scipy`, `scikit-learn`, `torch`, `tensorflow`,
+  `transformers`, `sentence-transformers`), image or video work (`sharp` on large
+  files, `ffmpeg`, `opencv`), a large `Dockerfile` (a full base image, a compiler
+  toolchain, many `apt-get` packages), an in-memory cache or model loaded at start,
+  or several workers (`gunicorn -w 4`, `cluster`, `worker_threads`).
+
+Read `package.json`, `requirements.txt` (or `pyproject.toml`), the `Dockerfile`, and the
+entrypoint's imports; pick the size of the heaviest signal. A redeploy keeps the size
+unless you pass another, so pass it again when a change adds a heavy dependency. If the
+plan's largest is smaller, the app runs at the largest and `note` says so with a link to
+the plans: relay it. A build or start that died of memory (`JavaScript heap out of
+memory`, `Killed`, exit code 137, `MemoryError`) gets the next size up on the redeploy.
 
 ## Who can open it
 
@@ -290,6 +319,8 @@ ask the user which app to turn off rather than turning one off yourself.
 - `error`: call `get_project_logs({ project_id })`, read the push log (the real pip or
   npm error is there), fix it, and redeploy under the same name. A redeploy updates in
   place and keeps the URL.
+- Out of memory (`heap out of memory`, `Killed`, exit 137, `MemoryError`): redeploy with
+  the next `machine_size` up (see Machine size).
 - Running but broken: `get_project_logs({ project_id, kind: "runtime" })` is the app's
   live log.
 - Plan-limit error: the Free plan allows one live project. Offer to terminate one, and
