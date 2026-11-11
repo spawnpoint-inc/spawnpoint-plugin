@@ -10,7 +10,7 @@
       "name": "spawnpoint",
       "source": "./plugin/spawnpoint",
       "description": "The launchpad for your AI-enabled business: Claude puts the apps, tools, and MCP servers it builds online and hands you a private link to share. To finish setting up, open this plugin's Connectors tab, add spawnpoint, and connect it.",
-      "version": "0.18.4",
+      "version": "0.18.5",
       "author": {
         "name": "spawnpoint"
       }
