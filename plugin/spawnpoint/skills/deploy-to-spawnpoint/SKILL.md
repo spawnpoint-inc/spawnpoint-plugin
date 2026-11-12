@@ -126,7 +126,10 @@ member of the team too; see Teams). Pass
 `set_visibility`. `share_project({ project_id, email })` invites one person (an email
 with the link, no account needed), or everyone at a company when `email` is its domain,
 `@company.com` (no invite goes out: give the user the link to pass along). Consumer
-domains like `@gmail.com` are refused. `unshare_project` revokes either.
+domains like `@gmail.com` are refused. `unshare_project` revokes either. When the user
+wants a share to end ("for a week"), pass `expires_in: "7d"` (1h to 365d) and that entry
+stops granting access then (other grants, such as a domain entry, the team, or public
+paths, still apply); sharing again without it removes the end.
 
 spawnpoint decides who can open an app, and it tells a restricted app who each viewer
 is: every request carries the `X-Spawnpoint-Viewer-Email` header, the lowercased email
