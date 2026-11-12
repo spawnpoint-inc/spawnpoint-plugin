@@ -316,7 +316,7 @@ by what the app stores:
 - A managed `DATABASE_URL` that was printed, logged, or committed:
   `rotate_database_password` gives the database a new password and the app keeps
   working; the tables and data stay. `set_env` cannot change it either.
-- `remove_storage` deletes the bucket and its files for good, and `remove_database` takes the database away from the app (it can be restored from the console for 7 days): ask the user first.
+- `remove_storage` and `remove_database` take the bucket or the database away from the app (each can be restored from the console for 7 days, then it is deleted): ask the user first.
 
 ## Scheduled work
 
@@ -412,8 +412,8 @@ ask the user which app to turn off rather than turning one off yourself.
 
 ## Ending a project
 
-- `terminate_project({ project_id, confirm: true })` destroys the machine and its data,
-  the bucket included; the database is kept 7 days, restorable from the console into a
+- `terminate_project({ project_id, confirm: true })` destroys the machine and its data;
+  the bucket and the database are kept 7 days, restorable from the console into a
   project deployed under the same name. Ask the user first, in those words, and pass
   `confirm: true` only after they agree.
 - Temporary or a demo? Pass `teardown_in` (`45m`, `2h`, `1d`) to `deploy_project`, or
