@@ -270,6 +270,13 @@ by what the app stores:
   set, connects with any Postgres client, and creates its own tables. Idempotent; the
   database dies with the project. For a small app, SQLite in the data directory is
   the simpler answer.
+- A redeploy installs and builds the new version while the old one keeps serving, and
+  only then stops the old one and starts the new. So a migration in `package.json`'s
+  `postinstall` or `build` script (both get the app's env, `DATABASE_URL` included)
+  changes the database under the old code, and one in the start command runs after the
+  old version stops. Either way a failed start puts the old version back on the
+  migrated database: keep migrations compatible with the previous version (add tables
+  and columns; drop old ones in a later deploy).
 - Each database has a size quota by plan and allows 20 connections. Past the quota it
   turns read-only (nothing is deleted): `get_project` shows `database.read_only` and a
   note. Relay the note; keep app connection pools small.
