@@ -6,10 +6,9 @@ description: Run an app's OpenAI or Anthropic calls on open models through spawn
 # Open models on spawnpoint
 
 spawnpoint can run an app's chat calls on open models (gpt-oss, Gemma, and Mistral) and
-its embeddings on `bge-m3`, through its own endpoint. The user needs no provider account
-and no key: the deploy mints the project's key and ships it as env. The user chooses,
-once, per project. Chat and embeddings go to two different places (section 2), and the
-user hears both.
+its embeddings on `cohere-embed-v3`, through its own endpoint. The user needs no provider
+account and no key: the deploy mints the project's key and ships it as env. The user
+chooses, once, per project.
 
 ## 1. Detect
 
@@ -33,16 +32,10 @@ One question, before the deploy, naming what was found and the model you would p
 with keeping the provider as a plain option:
 
 > This app calls OpenAI for chat and embeddings. spawnpoint can run both on open models
-> with no OpenAI key: chat on gpt-oss-120b, embeddings on bge-m3. Chat requests would go
-> through spawnpoint to Amazon Bedrock in AWS's Oregon region, which is set to keep none
-> of them. Embedding requests (the text being indexed and each search) would go to
-> OpenRelay instead: its SOC 2 Type II audit is in progress, and its policy lets it make
-> de-identified data from what it receives
-> (https://getspawnpoint.com/privacy.html#who-else). Switch both, switch only the chat,
-> or keep OpenAI for everything?
-
-An app whose only model calls are embeddings gets the same question, with only the
-OpenRelay half of it.
+> with no OpenAI key: chat on gpt-oss-120b, embeddings on cohere-embed-v3. The requests
+> would go through spawnpoint to Amazon Bedrock in AWS's Oregon region, which is set to
+> keep none of them; the companies that make the models cannot see them, and nothing is
+> used for training. Switch, or keep OpenAI?
 
 Never switch without the answer. Never ask twice for one project: a project that
 already exists without an `ai` block on `get_project` was deployed on the provider on
@@ -53,26 +46,16 @@ question, since there is no provider to keep.
 
 Every ask names where requests go, as above. When the user asks for more, or when the
 app would send other people's personal data or confidential material (customer records,
-call transcripts, mailbox contents) to the model, give the rest: each request goes
-through spawnpoint to Amazon Bedrock in AWS's us-west-2 region (Oregon), and no other
-region. spawnpoint's AWS account is set to zero data retention for Bedrock, so AWS keeps
-no requests or answers, does not use them to train models, and does not share them with
-the companies that make the models. spawnpoint stores no prompts or answers either, only
-a usage record per call (project, model, tokens, cost, time). The chat models are made by
-OpenAI, Google, and Mistral AI.
-
-Embeddings are the exception: each embeddings request goes through spawnpoint to
-OpenRelay, an inference provider, not to Bedrock. OpenRelay's SOC 2 Type II audit is in
-progress, not finished. Its privacy policy says it collects the text sent to it, and may
-make de-identified data from it that it owns, uses, and licenses to others; it gives no
-zero-retention promise. spawnpoint stores neither the text nor the vectors, only the
-usage record. `bge-m3` is made by BAAI. Never call OpenRelay SOC 2 certified or
-compliant, and never put embeddings under the Bedrock promise.
-
-Say this plainly before switching such an app, and offer keeping the provider, with its
-own key and retention terms, as the other choice; for an app that embeds personal or
-confidential text, offer moving only the chat. https://getspawnpoint.com/how-apps-run.html
-has the details.
+call transcripts, mailbox contents) to the model, give the rest: each request, chat and
+embeddings alike, goes through spawnpoint to Amazon Bedrock in AWS's us-west-2 region
+(Oregon), and no other region. spawnpoint's AWS account is set to zero data retention for
+Bedrock, so AWS keeps no requests or answers, does not use them to train models, and does
+not share them with the companies that make the models. spawnpoint stores no prompts,
+answers, texts, or vectors either, only a usage record per call (project, model, tokens,
+cost, time). The chat models are made by OpenAI, Google, and Mistral AI; the embeddings
+model by Cohere. Say this plainly before switching such an app, and offer keeping the
+provider, with its own key and retention terms, as the other choice.
+https://getspawnpoint.com/how-apps-run.html has the details.
 
 ## 3. Choose
 
@@ -83,7 +66,7 @@ has the details.
 | Chat in many languages, with no images | `mistral-large-3` (Mistral AI) | Does not read images: an image sent to it is refused |
 | Anthropic Messages format (the Anthropic SDK, kept as is) | `gpt-oss-120b` | Read the block whose `type` is `text`, not `content[0]`: a `thinking` block comes first when the request asks for thinking |
 | Images in the conversation (describe, read, compare, receipts, scans) | `gemma-4-31b` (Google) | Data URIs work; `gemma-4-26b` is the faster second choice |
-| Embeddings, search, RAG | `bge-m3` (BAAI), served through OpenRelay | 1024 dimensions, up to 8K tokens a text. A vector column sized for another model (1536 for `text-embedding-3-small`) becomes 1024, and vectors already stored from another model must be embedded again: vectors from two models do not compare. Its requests go to OpenRelay, not Bedrock (section 2) |
+| Embeddings, search, RAG | `cohere-embed-v3` (Cohere Embed Multilingual v3) | 1024 dimensions. Up to 96 texts a call, about 512 tokens each; longer text is cut at the end, so split long documents into chunks. spawnpoint serves about 20 embedding calls a minute in all: send texts in arrays, never one call per text, and retry a 429 after its `Retry-After`. A vector column sized for another model (1536 for `text-embedding-3-small`) becomes 1024, and vectors already stored from another model must be embedded again: vectors from two models do not compare |
 | Structured JSON output | any chat model | No `response_format`: ask for JSON in the prompt, parse, retry once on failure |
 | Sorting text into your own categories, scoring it, or a yes/no (routing, moderation, triage, tagging) | `gpt-oss-20b` | JSON by prompt, as above: name the allowed values in the prompt and check the answer is one of them |
 | Image generation, video, audio, speech | keep the provider | Not on the open catalog: say so, keep that key in `env`, and move on |
@@ -98,14 +81,14 @@ refuses every other model. Before you choose for a team app, call `whoami`: when
 it, take the closest approved model that serves the same call: a chat model for chat, and for
 an app kept on the Anthropic SDK one that takes that SDK (the server's
 instructions and the `ai` block's note name them; with none, keep the provider). Embeddings
-need `bge-m3` on the list; there is no other embeddings model. Tell the user which model
-and why. If no approved model serves the call, keep the provider for that call and tell
-the user the team has not approved an open model for it (a team admin can approve one,
-`bge-m3` for embeddings, on the team's page in the console). No tool changes the list.
+need `cohere-embed-v3` on the list; there is no other embeddings model. Tell the user which
+model and why. If no approved model serves the call, keep the provider for that call and
+tell the user the team has not approved an open model for it (a team admin can approve
+one, `cohere-embed-v3` for embeddings, on the team's page in the console). No tool changes
+the list.
 
-An app that does chat plus something the catalog lacks (image generation, audio, video),
-or whose user chose to move only the chat, moves the chat and keeps the provider for the
-rest; that still needs the provider key in `env` (section 4 says how the two clients
+An app that does chat plus something the catalog lacks (image generation, audio, video)
+moves the chat and keeps the provider for the rest; that still needs the provider key in `env` (section 4 says how the two clients
 split). Current catalog: `get_project`'s `ai.models` once a project has a key, or
 `GET <base_url>/models`.
 
@@ -118,16 +101,19 @@ their own, `OPENAI_BASE_URL` + `OPENAI_API_KEY` and `ANTHROPIC_BASE_URL` +
 
 - **OpenAI SDK** (Node, Python): the client already reads the base URL and key from
   env. Change the chat model to `process.env.SPAWNPOINT_AI_MODEL || "gpt-oss-120b"` and
-  the embeddings model to `"bge-m3"` on the same client, and drop `OPENAI_API_KEY` from
-  the deploy's `env`. Pass no `dimensions` to the embeddings call.
-- **Chat moves, the rest stays** (images or audio on the provider, the user moved only
-  the chat, or the team has not approved `bge-m3`): keep `OPENAI_API_KEY` in the
+  the embeddings model to `"cohere-embed-v3"` on the same client, and drop
+  `OPENAI_API_KEY` from the deploy's `env`. Pass no `dimensions` to the embeddings call.
+  When the app embeds a search query (not a document it stores), add
+  `input_type: "search_query"` to that call's parameters (Python:
+  `extra_body={"input_type": "search_query"}`); documents need nothing.
+- **Chat moves, the rest stays** (images or audio on the provider, or the team has not
+  approved `cohere-embed-v3`): keep `OPENAI_API_KEY` in the
   deploy's `env`. spawnpoint then leaves `OPENAI_BASE_URL` and `OPENAI_API_KEY` alone,
   so the default client still reaches OpenAI: leave those calls on it. Give
   the chat calls (and embeddings, when they move) a second client, `new OpenAI({ baseURL: process.env.SPAWNPOINT_AI_URL,
   apiKey: process.env.SPAWNPOINT_AI_KEY })` (Python: `OpenAI(base_url=...,
   api_key=...)` from the same two vars), with the model from `SPAWNPOINT_AI_MODEL`
-  (`"bge-m3"` for embeddings).
+  (`"cohere-embed-v3"` for embeddings).
   `SPAWNPOINT_AI_URL` is the OpenAI-style base and ends in `/v1`: never hand it to the
   Anthropic SDK. An Anthropic SDK app that keeps `OPENAI_API_KEY` for OpenAI
   embeddings changes nothing on its chat client: drop `ANTHROPIC_API_KEY` and it still
@@ -141,7 +127,7 @@ their own, `OPENAI_BASE_URL` + `OPENAI_API_KEY` and `ANTHROPIC_BASE_URL` +
 - **Vercel AI SDK**: `createOpenAI({ baseURL: process.env.OPENAI_BASE_URL, apiKey:
   process.env.OPENAI_API_KEY })` instead of the default instance; model from env.
 - **LangChain**: `ChatOpenAI(base_url=..., api_key=..., model=...)` from env, and
-  `OpenAIEmbeddings(base_url=..., api_key=..., model="bge-m3",
+  `OpenAIEmbeddings(base_url=..., api_key=..., model="cohere-embed-v3",
   check_embedding_ctx_length=False)` (it would otherwise send token ids, not text).
 - **Raw HTTP**: the host becomes `SPAWNPOINT_AI_URL`, the bearer `SPAWNPOINT_AI_KEY`.
 
@@ -150,24 +136,23 @@ not change a prompt (except to ask for JSON, as above). Keep a local fallback
 (`|| "gpt-oss-120b"`) so the app also runs on a developer's machine with their own
 `OPENAI_BASE_URL`.
 
-An app already on open models that calls `bge-m3` (or `embed`) for embeddings keeps
-working, and vectors it stored before still compare with new ones: change nothing. `laya` and
-`POST /decisions` are retired: move those calls to a chat model with JSON by prompt.
+`bge-m3` is retired, and the endpoint refuses it: an app that called it must name
+`cohere-embed-v3` (not `embed`) and embed every stored text again, since its stored
+vectors do not compare with the new model's. `laya` and `POST /decisions` are retired:
+move those calls to a chat model with JSON by prompt.
 `glm-5.2`, `glm-5.3-flash`, `qwen3.8-27b`, and `deepseek-ocr-2` still answer, on
 `gpt-oss-120b`, `gemma-4-26b`, `mistral-large-3`, and `gemma-4-31b`; write the new name
 when you edit the code.
 
 ## 5. Tell the user
 
-Say the app runs on `<model>` through spawnpoint, that its chat requests go to Amazon
-Bedrock in AWS's Oregon region, which keeps none of them (the line from the ask; for an
-app you wrote from scratch, this is the first time the user hears it), that no OpenAI or
+Say the app runs on `<model>` through spawnpoint, that its requests go to Amazon Bedrock
+in AWS's Oregon region, which keeps none of them (the line from the ask; for an app you
+wrote from scratch, this is the first time the user hears it), that no OpenAI or
 Anthropic key was needed, and which rule applies (the reasoning budget, the text block,
-JSON by prompt). An app whose embeddings moved: say they run on `bge-m3` through
-OpenRelay, not Bedrock, so the Bedrock promise does not cover them, that OpenRelay's
-SOC 2 Type II audit is in progress, that its policy lets it make de-identified data from
-the text it receives (say both, even when you skipped the ask), and that stored vectors from another model were (or
-must be) embedded again. An app that kept part of its calls on the provider: say the
+JSON by prompt). An app whose embeddings moved: say they run on `cohere-embed-v3`, about
+20 calls a minute across spawnpoint, so the app batches texts and retries when busy, and
+that stored vectors from another model were (or must be) embedded again. An app that kept part of its calls on the provider: say the
 assurances cover only the calls that moved, that the rest still go to the provider under
 its own terms, and that its key stays in `env`. `get_project` shows the `ai` block: `base_url`,
 `key_env`, `model`, `models`. The key dies with the project. A deploy refused with
