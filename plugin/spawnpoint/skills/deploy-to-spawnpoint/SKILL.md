@@ -8,7 +8,7 @@ description: Put an app, site, or page online with spawnpoint and get a link to 
 spawnpoint runs a small app on its own machine and returns a share link that survives
 redeploys.
 
-These skills are spawnpoint plugin version 0.20.0. When `whoami` reports a newer
+These skills are spawnpoint plugin version 0.20.1. When `whoami` reports a newer
 `plugin_version`, tell the user once that their spawnpoint plugin is out of date: in
 claude.ai or the desktop app, **Customize**, **Plugins**, **spawnpoint**, **Update**; in
 Claude Code, `/plugin`, **Marketplaces**, **spawnpoint**, update. When the user asks
@@ -267,9 +267,16 @@ by what the app stores:
   inside a docker container; `get_project` reports it as `data_dir`). It lives on one
   machine and dies with the project.
 - Call `add_database` after the first deploy: the app restarts with `DATABASE_URL`
-  set, connects with any Postgres client, and creates its own tables. Idempotent; the
-  database dies with the project. For a small app, SQLite in the data directory is
-  the simpler answer.
+  set, connects with any Postgres client, and creates its own tables. Idempotent; a
+  terminate keeps the database 7 days, restorable from the console, then drops it.
+  For a small app, SQLite in the data directory is the simpler answer.
+- While `get_project` shows `database.backups`, spawnpoint copies the database each
+  night and keeps each copy 30 days (7 on Free). Data lost to a bad migration or a
+  delete: no tool restores it. Call `get_project`; give the user
+  `database.backups.restore_url` and say they press
+  Restore on the night they want, in the Storage panel there (on a team, the app's
+  builder or a team admin). The app keeps its `DATABASE_URL`. With no `backups`
+  block, say the project's page in the console shows any copies there are.
 - A redeploy installs and builds the new version while the old one keeps serving, and
   only then stops the old one and starts the new. So a migration in `package.json`'s
   `postinstall` or `build` script (both get the app's env, `DATABASE_URL` included)
@@ -286,7 +293,8 @@ by what the app stores:
 - Call `add_storage` after the first deploy: the app restarts with `S3_ENDPOINT`,
   `S3_REGION`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, and `S3_SECRET_ACCESS_KEY` set. S3 SDKs
   do not read these names on their own: pass them to the client explicitly. The key
-  reaches this one bucket. Idempotent; the bucket and its files die with the project.
+  reaches this one bucket. Idempotent; a terminate keeps the bucket and its files 7
+  days, restorable from the console, then deletes them.
 - **Bytes never touch the machine.** The bucket is private by default: for an upload
   the app signs a presigned PUT URL and the browser sends the file straight to the
   bucket; for a download the app signs a presigned GET URL. Never stream uploads
