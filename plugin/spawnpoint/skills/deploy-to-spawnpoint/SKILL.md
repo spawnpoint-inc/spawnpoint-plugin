@@ -8,7 +8,7 @@ description: Put an app, site, or page online with spawnpoint and get a link to 
 spawnpoint runs a small app on its own machine and returns a share link that survives
 redeploys.
 
-These skills are spawnpoint plugin version 0.20.1. When `whoami` reports a newer
+These skills are spawnpoint plugin version 0.20.2. When `whoami` reports a newer
 `plugin_version`, tell the user once that their spawnpoint plugin is out of date: in
 claude.ai or the desktop app, **Customize**, **Plugins**, **spawnpoint**, **Update**; in
 Claude Code, `/plugin`, **Marketplaces**, **spawnpoint**, update. When the user asks
@@ -305,7 +305,7 @@ by what the app stores:
   by exact key, never a listing, so the app lists with its own key. A restricted
   project with a public bucket gets a `warning`: relay it to the user.
 - Files you have on disk that the site or app needs (a gallery's photos, a video, an
-  installer, anything that would push the bundle over 20 MiB): `upload_to_storage` with
+  installer, anything that would push the bundle over its cap): `upload_to_storage` with
   the paths, relative to the folder you run its `command` from; each path is the file's
   key. Run the command with bash from that folder, then link to each file's `url`
   (public bucket). No server is involved and the key never leaves spawnpoint. At most 50
@@ -414,7 +414,7 @@ ask the user which app to turn off rather than turning one off yourself.
 - `transfer.over` on a static site: it served its plan's monthly data and shows a
   "taking a break" page until the 1st. Tell the user; upgrading lifts it at once.
 - Not signed in (a 401, or no grant): give the steps under "Signing in".
-- Inline calls are capped at 4 MiB, uploads at 20 MiB (50 MiB for a static site). Keep images web-sized (jpg or
+- Inline calls are capped at 4 MiB, uploads at 200 MiB (50 MiB for a static site). Keep images web-sized (jpg or
   webp, under 200 KB each), and put big files in a bucket with `upload_to_storage`
   instead of the bundle.
 
