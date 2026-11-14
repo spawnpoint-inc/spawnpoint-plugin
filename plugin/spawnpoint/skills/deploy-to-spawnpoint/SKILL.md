@@ -8,7 +8,7 @@ description: Put an app, site, or page online with spawnpoint and get a link to 
 spawnpoint runs a small app on its own machine and returns a share link that survives
 redeploys.
 
-These skills are spawnpoint plugin version 0.20.2. When `whoami` reports a newer
+These skills are spawnpoint plugin version 0.21.0. When `whoami` reports a newer
 `plugin_version`, tell the user once that their spawnpoint plugin is out of date: in
 claude.ai or the desktop app, **Customize**, **Plugins**, **spawnpoint**, **Update**; in
 Claude Code, `/plugin`, **Marketplaces**, **spawnpoint**, update. When the user asks
@@ -426,6 +426,17 @@ ask the user which app to turn off rather than turning one off yourself.
   `confirm: true` only after they agree.
 - Temporary or a demo? Pass `teardown_in` (`45m`, `2h`, `1d`) to `deploy_project`, or
   call `schedule_teardown({ project_id, in })` later.
+
+## Handing an app to someone else
+
+To give an app to another person's spawnpoint account (a client at the end of a job),
+call `transfer_project({ project_id, to_email })`. It only drafts the offer, and nothing
+is deleted: give the user `confirm_url`, where they confirm it, and tell them the
+receiver accepts it in their own console, signed in with that address. The app keeps
+its spawnpoint link and data (a link under the sending team's own domain forwards for
+30 days, then stops). spawnpoint replaces the credentials it gave the app before it moves;
+secrets the user set themselves (API keys) move as they are, and the receiver should
+replace them.
 
 ## Other tools
 
