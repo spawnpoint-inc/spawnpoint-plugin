@@ -1,6 +1,6 @@
 # Credential patterns
 
-These are the nine shapes spawnpoint's server refuses in a bundle
+These are the ten shapes spawnpoint's server refuses in a bundle
 (`internal/deploy/scan.go`, `secretPatterns`), so the audit blocks exactly what
 the server would refuse and nothing it would accept. Keep the two lists
 identical: `internal/deploy/scan_patterns_test.go` fails when they drift.
@@ -12,6 +12,7 @@ identical: `internal/deploy/scan_patterns_test.go` fails when they drift.
 | Stripe secret key | `\b(?:sk\|rk)_live_[0-9A-Za-z]{16,}` |
 | Stripe test secret key | `\b(?:sk\|rk)_test_[0-9A-Za-z]{16,}` |
 | Stripe webhook signing secret | `\bwhsec_[0-9A-Za-z]{24,}` |
+| spawnpoint payments key | `\bspk_pay_[0-9A-Za-z]{32,}` |
 | OpenAI or Anthropic API key | `\bsk-(?:ant-\|proj-)?[0-9A-Za-z_-]{20,}` |
 | GitHub token | `\b(?:ghp\|gho\|ghs\|ghr)_[0-9A-Za-z]{36}\b\|\bgithub_pat_[0-9A-Za-z_]{22,}` |
 | Google API key | `\bAIza[0-9A-Za-z_-]{35}\b` |
@@ -20,12 +21,12 @@ identical: `internal/deploy/scan_patterns_test.go` fails when they drift.
 The `\|` in the table is an escaped pipe for markdown: the pattern itself has a
 plain `|`.
 
-One grep for all nine, from the app directory, skipping what never ships:
+One grep for all ten, from the app directory, skipping what never ships:
 
 ```bash
 grep -rInE --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=.venv \
   --exclude-dir=venv --exclude='.env' --exclude='.env.*' \
-  '\b(AKIA|ASIA)[0-9A-Z]{16}\b|-----BEGIN (RSA |EC |OPENSSH |DSA |PGP )?PRIVATE KEY-----|\b(sk|rk)_live_[0-9A-Za-z]{16,}|\b(sk|rk)_test_[0-9A-Za-z]{16,}|\bwhsec_[0-9A-Za-z]{24,}|\bsk-(ant-|proj-)?[0-9A-Za-z_-]{20,}|\b(ghp|gho|ghs|ghr)_[0-9A-Za-z]{36}\b|\bgithub_pat_[0-9A-Za-z_]{22,}|\bAIza[0-9A-Za-z_-]{35}\b|\bxox[baprs]-[0-9A-Za-z-]{10,}' . \
+  '\b(AKIA|ASIA)[0-9A-Z]{16}\b|-----BEGIN (RSA |EC |OPENSSH |DSA |PGP )?PRIVATE KEY-----|\b(sk|rk)_live_[0-9A-Za-z]{16,}|\b(sk|rk)_test_[0-9A-Za-z]{16,}|\bwhsec_[0-9A-Za-z]{24,}|\bspk_pay_[0-9A-Za-z]{32,}|\bsk-(ant-|proj-)?[0-9A-Za-z_-]{20,}|\b(ghp|gho|ghs|ghr)_[0-9A-Za-z]{36}\b|\bgithub_pat_[0-9A-Za-z_]{22,}|\bAIza[0-9A-Za-z_-]{35}\b|\bxox[baprs]-[0-9A-Za-z-]{10,}' . \
   | sed -E 's/:([0-9]+):.*/:\1/'
 ```
 
