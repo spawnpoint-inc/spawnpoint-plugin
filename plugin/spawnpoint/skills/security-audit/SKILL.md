@@ -29,7 +29,7 @@ table and a verdict.
 
 ## 1. What ships
 
-- [block] A credential-shaped string in any text file: the nine patterns in
+- [block] A credential-shaped string in any text file: the ten patterns in
   [patterns.md](patterns.md), with its one-line grep. Fix: move the value into `env`
   on `deploy_project` (or `set_env`), read it from the environment, and tell the
   user to **rotate the key**: it is in this transcript now. A spawnpoint bucket's
@@ -98,6 +98,15 @@ mode; a `127.0.0.1` bind breaks public mode. Both are one-line fixes: make them.
   with the webhook secret, HubSpot's request signature): spawnpoint checks no one on a
   public path, so anyone can call it. Fix: verify the signature with the secret from
   `env` and answer `401` when it fails.
+- [block] An app with payments (`get_project`'s `payments`, or about to call
+  `add_payments`) whose handler at `SPAWNPOINT_STRIPE_WEBHOOK_PATH` does not verify
+  the signature over the raw body with `STRIPE_WEBHOOK_SECRET`, that fulfils on the
+  success page instead of in that handler, or that fulfils on
+  `checkout.session.completed` without checking `payment_status` is `paid`: anyone
+  could mark an order paid, a buyer who closes the tab is never served, and a delayed
+  payment that later fails is shipped anyway. Fix: verify with `constructEvent`,
+  fulfil when `payment_status` is `paid` and on
+  `checkout.session.async_payment_succeeded`, once per session id.
 - [warn] An OAuth callback on a public path that does not check the `state` value it
   sent (or PKCE): a callback carries no signature, so state is its check. Do not add
   a signature check to it.

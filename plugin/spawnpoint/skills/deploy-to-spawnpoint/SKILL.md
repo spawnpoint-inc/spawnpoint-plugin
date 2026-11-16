@@ -8,7 +8,7 @@ description: Put an app, site, or page online with spawnpoint and get a link to 
 spawnpoint runs a small app on its own machine and returns a share link that survives
 redeploys.
 
-These skills are spawnpoint plugin version 0.21.0. When `whoami` reports a newer
+These skills are spawnpoint plugin version 0.22.0. When `whoami` reports a newer
 `plugin_version`, tell the user once that their spawnpoint plugin is out of date: in
 claude.ai or the desktop app, **Customize**, **Plugins**, **spawnpoint**, **Update**; in
 Claude Code, `/plugin`, **Marketplaces**, **spawnpoint**, update. When the user asks
@@ -250,6 +250,50 @@ HTTP) can run on open models through spawnpoint with no provider key: read the
 `open-models` skill before deploying it. It asks the user once, picks the model, and
 deploys with `inference: true`. An app you write that needs a model: use the open
 model from the start, no question needed.
+
+## Payments
+
+An app that sells something (a print shop, a class sign-up with a fee) takes payments
+into the owner's own Stripe account. Never ask the user for a Stripe key or paste one
+anywhere: spawnpoint gives the app its keys once the owner approves it in Stripe.
+
+1. Write the app with Stripe Checkout, the page Stripe hosts: a server route creates a
+   Checkout Session with `price_data` (name and amount, so nothing is made in Stripe
+   first) and redirects the buyer to its `url`. Never collect card numbers on the
+   app's own page.
+2. Create the Stripe client with `STRIPE_SECRET_KEY` and the host in
+   `SPAWNPOINT_STRIPE_API_HOST`. Node: `new Stripe(process.env.STRIPE_SECRET_KEY,
+   { host: process.env.SPAWNPOINT_STRIPE_API_HOST })`. Python: `stripe.api_key =
+   os.environ["STRIPE_SECRET_KEY"]` and `stripe.api_base = "https://" +
+   os.environ["SPAWNPOINT_STRIPE_API_HOST"]`. Without the host every call fails with
+   "Invalid API Key".
+3. Mount a `POST` handler at `SPAWNPOINT_STRIPE_WEBHOOK_PATH` (default
+   `/stripe/webhook`) that verifies the signature over the raw body with
+   `STRIPE_WEBHOOK_SECRET` (`stripe.webhooks.constructEvent`,
+   `stripe.Webhook.construct_event`) and fulfils each order once, there: on
+   `checkout.session.completed` when the session's `payment_status` is `paid`, and on
+   `checkout.session.async_payment_succeeded` for a payment that clears later (record
+   the session id so an order is never fulfilled twice). Never fulfil on the success page: a buyer
+   who closes the tab never reaches it.
+4. Start without the variables: show "payments are not set up yet" instead of
+   crashing.
+5. Deploy with runtime `node` or `python` (a static site is refused), then call
+   `add_payments` with the `project_id`.
+6. Give the user `connect_url` and say in one sentence what they do there: approve
+   spawnpoint in their own Stripe account, about a minute.
+7. Stop there and wait: the owner connects in their own browser. When they say they
+   have, call `get_project` once. If `payments.status` is `ready` and `payments.mode`
+   is `test`, ask them to buy something with the test card 4242 4242 4242 4242 (any
+   future date, any three digits) and check `get_project_visits` for the webhook path's
+   count. If `payments.mode` is `live`, the app already charges real cards: never
+   suggest a test card there.
+8. For real payments the user presses Take real payments on the console page. No tool
+   can do that step.
+
+If you also have Stripe's own MCP server, you may use it to look at test payments or
+create products, never to create a webhook endpoint for the app. `remove_payments`
+takes payments away (ask first). The money goes to the owner's Stripe account;
+spawnpoint never holds it and takes no fee.
 
 ## Storage: where the app keeps its data
 
